@@ -1,4 +1,4 @@
-package org.camunda.bpm.message;
+package org.camunda.bpm.messages;
 
 public class InsuranceOffering {
 
