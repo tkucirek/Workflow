@@ -1,5 +1,5 @@
 package org.camunda.bpm.handler;
 
-public class ContractHandler {
+public class Contract {
 
 }
