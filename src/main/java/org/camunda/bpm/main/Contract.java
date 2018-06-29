@@ -16,6 +16,7 @@ import javax.persistence.PersistenceContext;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -28,7 +29,7 @@ public class Contract {
 	  private Integer customerIsPrivate;
 	  private Long BvisId;
 	  
-	public void PersistContract (DelegateExecution test) {
+	public void persistContract (DelegateExecution test) {
 		
 	    Map<String, Object> variables = test.getVariables();// Get all process variables
 	    BvisId=(Long) variables.get("bvisProcessId"); // Get Bvis process Id
@@ -42,7 +43,7 @@ public class Contract {
 		} else {
 			customerIsPrivate=0;
 			this.setCustomerEntity(new BusinessCustomer());
-			((BusinessCustomer) customerEntity).setName((String) variables.get("firstName"));
+			((BusinessCustomer) customerEntity).setName((String) variables.get("name"));
 		}
 	    
 	    // Set order attributes for contract
@@ -72,7 +73,7 @@ public class Contract {
 		this.customerEntity = customerEntity;
 	}
 
-	public void CompareToDatabase (DelegateExecution test) throws ClassNotFoundException {
+	public void compareToDatabase (DelegateExecution test) throws ClassNotFoundException {
 		System.out.println("User is now compared to the database");
 
 		Map<String, Object> variables = test.getVariables();
@@ -130,23 +131,76 @@ public class Contract {
 		test.setVariable("isPrivate", customerIsPrivate);
 	}
 
-	public void CreateNewEntry (DelegateExecution test) {
-	
+	public void createNewEntry (DelegateExecution test) throws ClassNotFoundException {
+		System.out.println("Creating new user entry");
+
+		Map<String, Object> variables = test.getVariables();
+		boolean customerExists = false;
+
+		Class.forName("org.sqlite.JDBC");
+
+		Connection connection = null;
+		try {
+			// create a database connection
+			connection = DriverManager.getConnection("jdbc:sqlite:C:/Users/Felix Laptop/git/Workflow/Datenbank.db");
+			Statement statement = connection.createStatement();
+			statement.setQueryTimeout(30); 
+
+			String dbname = (customerEntity).getName();
+			String dbbirthday = ((PrivateCustomer) customerEntity).getDateOfBirth();
+			int dbNumberOfClaims = 1;
+			int dbIsPrivate = 1; // only privateCustomers are inserted here
+			
+			//set the information from the customerEntity
+			
+
+			//insert values into the database
+			String insertStatement = "INSERT INTO Customer(name,numberOfClaims,isPrivate) VALUES('" + dbname
+					+ "','" + dbNumberOfClaims + "','" + dbIsPrivate + "')";
+			PreparedStatement ps = connection.prepareStatement(insertStatement);
+			ps.executeUpdate();
+
+			// get the id of the just created customer (largest Id because of
+			// auto increment)
+			ResultSet rs_current = statement.executeQuery(
+					"SELECT customerId FROM Customer WHERE Id = (SELECT MAX(Id) FROM Customer)");
+			int dbCustomerId = rs_current.getInt("customerId");
+
+			String insertStatement2 = "INSERT INTO PrivateCustomer(Id,Birthday,Name) VALUES('"
+					+ dbCustomerId + ",'" + dbbirthday + ",'" + dbname + "')";
+			PreparedStatement ps2 = connection.prepareStatement(insertStatement2);
+			ps2.executeUpdate();
+
+			System.out.println("Customer entry has been created.");
+
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+		} finally {
+			try {
+				if (connection != null)
+					connection.close();
+			} catch (SQLException e) {
+				System.err.println(e);
+			}
+		}
+
+		//test.setVariable("contractId", dbContractId);
+		//System.out.println("The current contractId is " + dbContractId + ".");
 }
-	public void UpdateDatabase (DelegateExecution test) {
+	public void updateDatabase (DelegateExecution test) {
 		
 	}
-	public void EvaluateCustomer (DelegateExecution test) {
+	public void evaluateCustomer (DelegateExecution test) {
 		
 	}
-	public void CalculateFees (DelegateExecution test) {
+	public void calculateFees (DelegateExecution test) {
 		
 	}
-	public void SendOffering (DelegateExecution test) {
+	public void sendOffering (DelegateExecution test) {
 		
 	}
 	
-	public void RecordContract (DelegateExecution test) {
+	public void recordContract (DelegateExecution test) {
 	
 }
 }

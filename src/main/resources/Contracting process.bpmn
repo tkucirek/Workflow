@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" id="Definitions_1wqpg3d" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="1.15.1">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1wqpg3d" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="1.15.1">
   <bpmn:collaboration id="Collaboration_0eg8kno">
     <bpmn:participant id="contracting_process" name="Contracting process" processRef="contracting" />
   </bpmn:collaboration>
@@ -7,7 +7,6 @@
     <bpmn:laneSet id="LaneSet_0xbpb5n">
       <bpmn:lane id="Lane_18apn5c" name="Automated">
         <bpmn:flowNodeRef>customer_requirement_recieved</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>check_incoming_information</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Task_1yqxsinCompare_against_internal_customer_data</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>customer_in_database_closing</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>information_changed_closing</bpmn:flowNodeRef>
@@ -30,16 +29,12 @@
         <bpmn:flowNodeRef>contract_failed</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
-    <bpmn:startEvent id="customer_requirement_recieved" name="Customer requirements recieved">
+    <bpmn:startEvent id="customer_requirement_recieved" name="Customer requirements recieved" camunda:formKey="app:contract.jsf">
       <bpmn:outgoing>SequenceFlow_0lqgarw</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:serviceTask id="check_incoming_information" name="Check incoming information">
-      <bpmn:incoming>SequenceFlow_0lqgarw</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_1srgg74</bpmn:outgoing>
-    </bpmn:serviceTask>
     <bpmn:dataStoreReference id="customer_database_read" name="Customer database" />
-    <bpmn:serviceTask id="Task_1yqxsinCompare_against_internal_customer_data" name="Compare against internal customer data">
-      <bpmn:incoming>SequenceFlow_1srgg74</bpmn:incoming>
+    <bpmn:serviceTask id="Task_1yqxsinCompare_against_internal_customer_data" name="Compare against internal customer data" camunda:expression="${contract.persistContract(execution)}">
+      <bpmn:incoming>SequenceFlow_0lqgarw</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0eyhs8f</bpmn:outgoing>
       <bpmn:property id="Property_0pj4dw7" name="__targetRef_placeholder" />
       <bpmn:dataInputAssociation id="DataInputAssociation_0h1eko3">
@@ -79,7 +74,7 @@
         <bpmn:targetRef>customer_database_update</bpmn:targetRef>
       </bpmn:dataOutputAssociation>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="create_new_customer_entry" name="Create new customer entry">
+    <bpmn:serviceTask id="create_new_customer_entry" name="Create new customer entry" camunda:expression="${contract.createNewEntry(execution)}">
       <bpmn:incoming>customer_not_in_database</bpmn:incoming>
       <bpmn:outgoing>entry_created</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -124,12 +119,15 @@
     <bpmn:endEvent id="contract_failed" name="Contract failed">
       <bpmn:incoming>SequenceFlow_1anliaq</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="SequenceFlow_0lqgarw" sourceRef="customer_requirement_recieved" targetRef="check_incoming_information" />
-    <bpmn:sequenceFlow id="SequenceFlow_1srgg74" sourceRef="check_incoming_information" targetRef="Task_1yqxsinCompare_against_internal_customer_data" />
+    <bpmn:sequenceFlow id="SequenceFlow_0lqgarw" sourceRef="customer_requirement_recieved" targetRef="Task_1yqxsinCompare_against_internal_customer_data" />
     <bpmn:sequenceFlow id="SequenceFlow_0eyhs8f" sourceRef="Task_1yqxsinCompare_against_internal_customer_data" targetRef="customer_in_database" />
-    <bpmn:sequenceFlow id="customer_not_in_database" name="No" sourceRef="customer_in_database" targetRef="create_new_customer_entry" />
+    <bpmn:sequenceFlow id="customer_not_in_database" name="No" sourceRef="customer_in_database" targetRef="create_new_customer_entry">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${not customerExists}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="information_changed_yes" name="Yes" sourceRef="information_changed" targetRef="update_information" />
-    <bpmn:sequenceFlow id="customer_exists_in_database" name="Yes" sourceRef="customer_in_database" targetRef="information_changed" />
+    <bpmn:sequenceFlow id="customer_exists_in_database" name="Yes" sourceRef="customer_in_database" targetRef="information_changed">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${customerExists}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="information_changed_no" name="No" sourceRef="information_changed" targetRef="customer_in_database_closing" />
     <bpmn:sequenceFlow id="entry_created" sourceRef="create_new_customer_entry" targetRef="customer_in_database_closing" />
     <bpmn:sequenceFlow id="database_to_update" sourceRef="customer_in_database_closing" targetRef="information_changed_closing" />
@@ -160,9 +158,6 @@
         <bpmndi:BPMNLabel>
           <dc:Bounds x="159" y="145" width="65" height="40" />
         </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="ServiceTask_013jl2c_di" bpmnElement="check_incoming_information">
-        <dc:Bounds x="259" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="DataStoreReference_197cnoc_di" bpmnElement="customer_database_read">
         <dc:Bounds x="434" y="232" width="50" height="50" />
@@ -247,10 +242,6 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0lqgarw_di" bpmnElement="SequenceFlow_0lqgarw">
         <di:waypoint x="209" y="120" />
-        <di:waypoint x="259" y="120" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="SequenceFlow_1srgg74_di" bpmnElement="SequenceFlow_1srgg74">
-        <di:waypoint x="359" y="120" />
         <di:waypoint x="409" y="120" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0eyhs8f_di" bpmnElement="SequenceFlow_0eyhs8f">
