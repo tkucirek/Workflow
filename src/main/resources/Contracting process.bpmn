@@ -16,12 +16,12 @@
         <bpmn:flowNodeRef>update_information</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>create_new_customer_entry</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>calculate_insurance_premium</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>create_and_send_insurance_offering</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>event_gateway1</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>record_contract</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>collect_inurance_fees</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>contract_received</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>send_invoice</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>create_and_send_insurance_offering</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="Lane_10e3s8u" name="Manual ">
         <bpmn:flowNodeRef>terminate_contract</bpmn:flowNodeRef>
@@ -63,11 +63,11 @@
       <bpmn:outgoing>SequenceFlow_1xw570y</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:dataStoreReference id="customer_database_update" name="Customer database" />
-    <bpmn:serviceTask id="evaluate_customer" name="Evaluate Customer">
+    <bpmn:serviceTask id="evaluate_customer" name="Evaluate Customer" camunda:expression="${true}">
       <bpmn:incoming>SequenceFlow_1xw570y</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1m2gn8s</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="update_information" name="Update information">
+    <bpmn:serviceTask id="update_information" name="Update information" camunda:expression="${true}">
       <bpmn:incoming>information_changed_yes</bpmn:incoming>
       <bpmn:outgoing>information_updated</bpmn:outgoing>
       <bpmn:dataOutputAssociation id="DataOutputAssociation_1myjmnf">
@@ -78,14 +78,10 @@
       <bpmn:incoming>customer_not_in_database</bpmn:incoming>
       <bpmn:outgoing>entry_created</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="calculate_insurance_premium" name="Calculate insurance premium">
+    <bpmn:serviceTask id="calculate_insurance_premium" name="Calculate insurance premium" camunda:expression="${true}">
       <bpmn:incoming>SequenceFlow_1m2gn8s</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0v4k1mm</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sendTask id="create_and_send_insurance_offering" name="Create and send insurance offering">
-      <bpmn:incoming>SequenceFlow_0v4k1mm</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_1te7xei</bpmn:outgoing>
-    </bpmn:sendTask>
     <bpmn:eventBasedGateway id="event_gateway1">
       <bpmn:incoming>SequenceFlow_1te7xei</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1suy8p4</bpmn:outgoing>
@@ -94,10 +90,10 @@
     <bpmn:intermediateCatchEvent id="contract_received" name="Contract received">
       <bpmn:incoming>SequenceFlow_0jooqld</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1cmrjy0</bpmn:outgoing>
-      <bpmn:messageEventDefinition />
+      <bpmn:messageEventDefinition messageRef="Message_1n6dn6g" />
     </bpmn:intermediateCatchEvent>
     <bpmn:dataStoreReference id="contract_database" name="Contract database" />
-    <bpmn:serviceTask id="record_contract" name="Record contract">
+    <bpmn:serviceTask id="record_contract" name="Record contract" camunda:expression="${true}">
       <bpmn:incoming>SequenceFlow_1cmrjy0</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1dp4del</bpmn:outgoing>
       <bpmn:dataOutputAssociation id="DataOutputAssociation_17qo2qx">
@@ -110,7 +106,9 @@
     <bpmn:intermediateCatchEvent id="IntermediateCatchEvent_04hrj0n" name="Wait 1 week">
       <bpmn:incoming>SequenceFlow_1suy8p4</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1thu2x9</bpmn:outgoing>
-      <bpmn:timerEventDefinition />
+      <bpmn:timerEventDefinition>
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">10</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
     <bpmn:userTask id="terminate_contract" name="Terminate contract">
       <bpmn:incoming>SequenceFlow_1thu2x9</bpmn:incoming>
@@ -124,11 +122,15 @@
     <bpmn:sequenceFlow id="customer_not_in_database" name="No" sourceRef="customer_in_database" targetRef="create_new_customer_entry">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${not customerExists}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="information_changed_yes" name="Yes" sourceRef="information_changed" targetRef="update_information" />
+    <bpmn:sequenceFlow id="information_changed_yes" name="Yes" sourceRef="information_changed" targetRef="update_information">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="customer_exists_in_database" name="Yes" sourceRef="customer_in_database" targetRef="information_changed">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${customerExists}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="information_changed_no" name="No" sourceRef="information_changed" targetRef="customer_in_database_closing" />
+    <bpmn:sequenceFlow id="information_changed_no" name="No" sourceRef="information_changed" targetRef="customer_in_database_closing">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${false}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="entry_created" sourceRef="create_new_customer_entry" targetRef="customer_in_database_closing" />
     <bpmn:sequenceFlow id="database_to_update" sourceRef="customer_in_database_closing" targetRef="information_changed_closing" />
     <bpmn:sequenceFlow id="information_updated" sourceRef="update_information" targetRef="information_changed_closing" />
@@ -143,11 +145,16 @@
     <bpmn:sequenceFlow id="SequenceFlow_1dp4del" sourceRef="record_contract" targetRef="send_invoice" />
     <bpmn:sequenceFlow id="SequenceFlow_0ilbif6" sourceRef="send_invoice" targetRef="collect_inurance_fees" />
     <bpmn:sequenceFlow id="SequenceFlow_1anliaq" sourceRef="terminate_contract" targetRef="contract_failed" />
-    <bpmn:serviceTask id="send_invoice" name="Send invoice">
+    <bpmn:serviceTask id="send_invoice" name="Send invoice" camunda:expression="${true}">
       <bpmn:incoming>SequenceFlow_1dp4del</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0ilbif6</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:serviceTask id="create_and_send_insurance_offering" name="Create and send insurance offering" camunda:expression="${true}">
+      <bpmn:incoming>SequenceFlow_0v4k1mm</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1te7xei</bpmn:outgoing>
+    </bpmn:serviceTask>
   </bpmn:process>
+  <bpmn:message id="Message_1n6dn6g" name="Message_0nkug2r" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0eg8kno">
       <bpmndi:BPMNShape id="Participant_0pygkfv_di" bpmnElement="contracting_process">
@@ -200,9 +207,6 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ServiceTask_0qnu53o_di" bpmnElement="calculate_insurance_premium">
         <dc:Bounds x="1371" y="80" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="SendTask_095h0o5_di" bpmnElement="create_and_send_insurance_offering">
-        <dc:Bounds x="1557" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="EventBasedGateway_07jhb45_di" bpmnElement="event_gateway1">
         <dc:Bounds x="1729" y="95" width="50" height="50" />
@@ -354,6 +358,9 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ServiceTask_1k0rbh2_di" bpmnElement="send_invoice">
         <dc:Bounds x="2131" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_12d1dbd_di" bpmnElement="create_and_send_insurance_offering">
+        <dc:Bounds x="1557" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
