@@ -1,0 +1,67 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core">
+
+<f:view>
+  <f:metadata>
+    <!-- Start a new process instance. The Process Definition Key is read internally from
+         request parameters and cached in the CDI conversation scope.
+    -->
+    <f:event type="preRenderView" listener="#{camundaTaskForm.startProcessInstanceByKeyForm()}" />
+  </f:metadata>
+  <h:head>
+    <title>Place Order</title>
+  </h:head>
+  <h:body>
+    <h1>Select your pizza</h1>
+    <h:form id="submitForm">
+      <h:panelGrid columns="2">
+
+
+          <label for="name">Name</label>
+          <!-- create process variables using the processVariables map. -->
+          <h:inputText id="name" value="#{processVariables['name']}" required="true" />
+          
+          <label for="bvisProcessId">Customer_ID</label>
+          <!-- create process variables using the processVariables map. -->
+          <h:inputText id="bvisProcessId" value="#{processVariables['bvisProcessId']}" required="true" />
+          
+          <label for="Customer_type">Customer_Type</label>
+          <!-- create process variables using the processVariables map. -->
+          <h:inputText id="Customer_type" value="#{processVariables['Customer_type']}" required="true" />
+          
+          <label for="name">Name</label>
+          <!-- create process variables using the processVariables map. -->
+          <h:inputText id="name" value="#{processVariables['name']}" required="true" />
+          
+           <label for="birthdate">Birthdate</label>
+          <!-- create process variables using the processVariables map. -->
+          <h:inputText id="birthdate" value="#{processVariables['birthdate']}" required="true" />
+          
+           <label for="rental_duration">Duration</label>
+          <!-- create process variables using the processVariables map. -->
+          <h:inputText id="rental_duration" value="#{processVariables['rental_duration']}" required="true" />
+          
+           <label for="vehicle_model">Model</label>
+          <!-- create process variables using the processVariables map. -->
+          <h:inputText id="vehicle_model" value="#{processVariables['vehicle_model']}" required="true" />
+          
+          <label for="number_of_vehicles">Model</label>
+          <!-- create process variables using the processVariables map. -->
+          <h:inputText id="number_of_vehicles" value="#{processVariables['number_of_vehicles']}" required="true" />
+
+      </h:panelGrid>
+
+      <!-- The button starts a new process instance. This ends the conversation and redirects us to the tasklist.
+
+           NOTE: Syntax is different when working on user task forms, see file "approveLoanRequest.xhtml".
+      -->
+      <h:commandButton id="submit_button" value="Order Pizza" action="#{camundaTaskForm.completeProcessInstanceForm()}" />
+
+      <h:messages style="color:red;margin:8px;" />
+    </h:form>
+  </h:body>
+</f:view>
+</html>
