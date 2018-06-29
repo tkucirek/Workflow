@@ -4,7 +4,7 @@
     xmlns="http://www.camunda.org/schema/1.0/ProcessApplication"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-  <process-archive name="contract-process">
+  <process-archive name="contract">
     <process-engine>default</process-engine>
     <properties>
       <property name="isDeleteUponUndeploy">true</property>
@@ -12,7 +12,7 @@
     </properties>
   </process-archive>
   
-    <process-archive name="claim-process">
+    <process-archive name="claim">
     <process-engine>default</process-engine>
     <properties>
       <property name="isDeleteUponUndeploy">true</property>
