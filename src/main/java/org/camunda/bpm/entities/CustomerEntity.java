@@ -1,12 +1,19 @@
 package org.camunda.bpm.entities;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Version;
+
 public class CustomerEntity {
+	@Id
+	  @GeneratedValue
+	  protected Long id;
+
+	  @Version
+	  protected long version;
 	
 	protected int insuranceClass;
-	protected boolean businessCustomer;
-	protected String companyName;
-	protected String firstName;
-	protected String lastName;
-	protected String dateOfBirth;
+	protected enum customerType {PRIVATE,BUSINESS;}
+	
 	
 }

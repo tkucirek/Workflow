@@ -23,7 +23,7 @@ public class ContractEntity implements Serializable {
 	protected Long number_of_vehicles;
 	protected int contractId;
 	protected double price;
-	protected double duration;
+	protected Long duration;
 	
 	public Long getId() {
 		return id;
@@ -64,7 +64,7 @@ public class ContractEntity implements Serializable {
 	public double getDuration() {
 		return duration;
 	}
-	public void setDuration(double duration) {
+	public void setDuration(Long duration) {
 		this.duration = duration;
 	}
 
