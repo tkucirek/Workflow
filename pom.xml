@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.camunda.bpmn.getstarted</groupId>
-  <artifactId>charge-card-worker</artifactId>
+  <groupId>org.camunda.bpmn.main</groupId>
+  <artifactId>contract</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   
   <!-- import Camunda BOM to ensure correct versions of Camunda projects -->
@@ -15,19 +15,107 @@
         <type>pom</type>
       </dependency>
     </dependencies>
-  </dependencyManagement>  
-  
+  </dependencyManagement>
+
   <dependencies>
-		<dependency>
-			<groupId>org.camunda.bpm</groupId>
-			<artifactId>camunda-external-task-client</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		
-		<dependency>
-  <groupId>org.camunda.bpm</groupId>
-  <artifactId>camunda-engine</artifactId>
-</dependency>
-	</dependencies>
   
+   <!-- https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc -->
+		<dependency>
+    		<groupId>org.xerial</groupId>
+    		<artifactId>sqlite-jdbc</artifactId>
+    		<version>3.19.3</version>
+    		<scope>test</scope>
+		</dependency>
+
+    <!-- Camunda engine dependency -->
+    <dependency>
+      <groupId>org.camunda.bpm</groupId>
+      <artifactId>camunda-engine</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+  <!-- bootstrap -->
+	<dependency>
+    <groupId>net.bootsfaces</groupId>
+    <artifactId>bootsfaces</artifactId>
+    <version>1.1.0</version>
+</dependency>
+
+    <!-- Camunda cdi beans -->
+    <dependency>
+      <groupId>org.camunda.bpm</groupId>
+      <artifactId>camunda-engine-cdi</artifactId>
+    </dependency>
+
+    <!-- provides a default EjbProcessApplication -->
+    <dependency>
+      <groupId>org.camunda.bpm.javaee</groupId>
+      <artifactId>camunda-ejb-client</artifactId>
+    </dependency>
+    
+          <dependency>
+<groupId>org.apache.httpcomponents</groupId>
+<artifactId>httpclient</artifactId>
+<version>4.5.1</version>
+</dependency>
+
+<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.6.3</version>
+		</dependency>
+
+    <!-- Java EE 7 Specification -->
+    <dependency>
+      <groupId>org.jboss.spec</groupId>
+      <artifactId>jboss-javaee-7.0</artifactId>
+      <version>1.0.3.Final</version>
+      <type>pom</type>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>xalan</artifactId>
+          <groupId>xalan</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>   
+    
+    <dependency>
+    <groupId>org.jboss.resteasy</groupId>
+    <artifactId>resteasy-client</artifactId>
+    <version>3.0.9.Final</version>
+</dependency>
+
+<dependency>
+  			<groupId>com.itextpdf</groupId>
+  			<artifactId>itextpdf</artifactId>
+  			<version>5.5.11</version>
+		</dependency>
+
+  </dependencies>
+
+  <build>
+    <finalName>contract-process</finalName>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>2.3</version>
+        <configuration>
+          <failOnMissingWebXml>false</failOnMissingWebXml>
+        </configuration>
+      </plugin>
+      <plugin>  
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.1</version>
+        <configuration>
+            <source>1.8</source>
+            <target>1.8</target>
+        </configuration>
+    </plugin>
+    </plugins> 
+  </build>
+
 </project>
