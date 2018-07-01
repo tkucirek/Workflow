@@ -7,12 +7,14 @@ import org.camunda.bpm.entities.CustomerEntity;
 import org.camunda.bpm.entities.PrivateCustomer;
 import org.camunda.bpm.engine.cdi.jsf.TaskForm;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
+import org.camunda.bpm.engine.cdi.jsf.TaskForm;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -22,18 +24,36 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Map;
 
+@Stateless
+@Named
 public class Contract {
+	@PersistenceContext
 	  private EntityManager entityManager;
+	@Inject
+	  private TaskForm taskForm;
+	
 	  private ContractEntity contractEntity;
 	  private CustomerEntity customerEntity;
 	  private Integer customerIsPrivate;
 	  private Long BvisId;
 	  
+	  public void mergeOrderAndCompleteTask(ContractEntity contractEntity) {
+			// Merge detached order entity with current persisted state
+			entityManager.merge(contractEntity);
+			try {
+				// Complete user task from
+				taskForm.completeTask();
+			} catch (IOException e) {
+				// Rollback both transactions on error
+				throw new RuntimeException("Cannot complete task", e);
+			}
+		}
+	  
 	public void persistContract (DelegateExecution test) {
 		
 	    Map<String, Object> variables = test.getVariables();// Get all process variables
-	    BvisId=(Long) variables.get("bvisProcessId"); // Get Bvis process Id
-	    
+	    //BvisId=(Long) variables.get("bvisProcessId"); // Get Bvis process Id
+	   
 	    // Create customer and set order attributes for customer
 	    if (variables.get("Customer_type").equals("private")) {
 			customerIsPrivate=1;
@@ -47,10 +67,11 @@ public class Contract {
 		}
 	    
 	    // Set order attributes for contract
+	    this.setContractEntity(new ContractEntity());
 	    contractEntity.setCustomerId(customerEntity.getId());
-	    contractEntity.setDuration((Long)variables.get("rental_duration"));
-	    contractEntity.setVehicle_model((Long) variables.get("vehicle_model"));
-	    contractEntity.setNumber_of_vehicles((Long) variables.get("number_of_vehicles"));
+	    //contractEntity.setDuration((Long)variables.get("rental_duration"));
+	    //contractEntity.setVehicle_model((Long) variables.get("vehicle_model"));
+	    //contractEntity.setNumber_of_vehicles((Long) variables.get("number_of_vehicles"));
 	    
 	    
 	    // Persist order instance and flush. After the flush the
@@ -72,19 +93,37 @@ public class Contract {
 	public void setCustomerEntity(CustomerEntity customerEntity) {
 		this.customerEntity = customerEntity;
 	}
+	
+	public CustomerEntity getCustomer(Long customerId) {
+		// Load customer entity from database
+		if (customerIsPrivate==1) {
+			return entityManager.find(PrivateCustomer.class, customerId);
+		} else
+			return entityManager.find(BusinessCustomer.class, customerId);
+	}
+	
+	public void setContractEntity(ContractEntity contractEntity) {
+		this.contractEntity = contractEntity;
+	}
+	
+	public ContractEntity getContract(Long contractId) {
+		// Load contract entity from database
+		return entityManager.find(ContractEntity.class, contractId);
+	}
+
 
 	public void compareToDatabase (DelegateExecution test) throws ClassNotFoundException {
 		System.out.println("User is now compared to the database");
 
 		Map<String, Object> variables = test.getVariables();
 		boolean customerExists = false;
-
+	
 		Class.forName("org.sqlite.JDBC");
 
 		Connection connection = null;
 		try {
 			// create a database connection
-			connection = DriverManager.getConnection("jdbc:sqlite:C:/Users/Felix Laptop/git/Workflow/Datenbank.db");
+			connection = DriverManager.getConnection("jdbc:sqlite:C:/Users/Felix/git/Workflow/Datenbank.db");
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30); 
 			
@@ -127,8 +166,9 @@ public class Contract {
 			}
 		}
 
-		test.setVariable("customerExists", customerExists);
+		
 		test.setVariable("isPrivate", customerIsPrivate);
+		test.setVariable("customerExists", customerExists);
 	}
 
 	public void createNewEntry (DelegateExecution test) throws ClassNotFoundException {
@@ -155,7 +195,7 @@ public class Contract {
 			
 
 			//insert values into the database
-			String insertStatement = "INSERT INTO Customer(name,numberOfClaims,isPrivate) VALUES('" + dbname
+			String insertStatement = "INSERT INTO Customer(name,numberOfClaims,business_customer) VALUES('" + dbname
 					+ "','" + dbNumberOfClaims + "','" + dbIsPrivate + "')";
 			PreparedStatement ps = connection.prepareStatement(insertStatement);
 			ps.executeUpdate();
@@ -163,11 +203,11 @@ public class Contract {
 			// get the id of the just created customer (largest Id because of
 			// auto increment)
 			ResultSet rs_current = statement.executeQuery(
-					"SELECT customerId FROM Customer WHERE Id = (SELECT MAX(Id) FROM Customer)");
-			int dbCustomerId = rs_current.getInt("customerId");
-
+					"SELECT Id FROM Customer WHERE Id = (SELECT MAX(Id) FROM Customer)");
+			int dbCustomerId = rs_current.getInt("Id");
+			System.out.println("zweite");
 			String insertStatement2 = "INSERT INTO PrivateCustomer(Id,Birthday,Name) VALUES('"
-					+ dbCustomerId + ",'" + dbbirthday + ",'" + dbname + "')";
+					+ dbCustomerId + "','" + dbbirthday + "','" + dbname + "')";
 			PreparedStatement ps2 = connection.prepareStatement(insertStatement2);
 			ps2.executeUpdate();
 

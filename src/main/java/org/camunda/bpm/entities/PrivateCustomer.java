@@ -1,5 +1,8 @@
 package org.camunda.bpm.entities;
 
+import javax.persistence.Entity;
+
+@Entity
 public class PrivateCustomer extends  CustomerEntity {
 
 	protected String dateOfBirth;

@@ -2,10 +2,12 @@ package org.camunda.bpm.entities;
 
 import java.io.Serializable;
 
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Version;
 
+@Entity
 public class ContractEntity implements Serializable {
 	
 	private static  final long serialVersionUID = 1L;
@@ -24,6 +26,7 @@ public class ContractEntity implements Serializable {
 	protected int contractId;
 	protected double price;
 	protected Long duration;
+	
 	
 	public Long getId() {
 		return id;

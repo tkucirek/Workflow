@@ -2,6 +2,7 @@ package org.camunda.bpm.entities;
 
 import java.util.ArrayList;
 
+import javax.persistence.Entity;
 public class ClaimEntity {
 	
 	protected int contractId;
