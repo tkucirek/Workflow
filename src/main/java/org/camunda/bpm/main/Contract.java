@@ -123,18 +123,24 @@ public class Contract {
 		Connection connection = null;
 		try {
 			// create a database connection
-			connection = DriverManager.getConnection("jdbc:sqlite:C:/Users/Felix Laptop/git/Workflow/Datenbank.db");
+			connection = DriverManager.getConnection("jdbc:sqlite:C:/Users/Felix/git/Workflow/Datenbank.db");
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30); 
 			
-
+			ResultSet result = statement.executeQuery("SELECT * from Customer;");
+			while (result.next()) {
+				System.out.println(
+						"Check whether customer with name: " + result.getString("Name") + "exists.");
+				if (( customerEntity).getName().equals(result.getString("Name"))) {
+					System.out.println("Customer already exists in database");
+					customerExists = true;}}}
 			// Private Customers' uniqueness is checked via driverLicenseId
-			if (customerIsPrivate==1) {
+			/*if (customerIsPrivate==1) {
 				ResultSet rs_private = statement.executeQuery("SELECT * from PrivateCustomer;");
 				while (rs_private.next()) {
 					System.out.println(
 							"Check whether customer with name: " + rs_private.getString("Name") + "exists.");
-					if (((PrivateCustomer) customerEntity).getName().equals(rs_private.getString("Name"))) {
+					if (( customerEntity).getName().equals(rs_private.getString("Name"))) {
 						System.out.println("Customer already exists in database");
 						customerExists = true;
 						
@@ -144,18 +150,18 @@ public class Contract {
 			// Business Customers' uniqueness is checked via their name
 			// (assumption: two companies do not have the same name)
 			else {
-				ResultSet rs_business = statement.executeQuery("SELECT * from BusinessCustomer;");
+				ResultSet rs_business = statement.executeQuery("SELECT * from FirmCustomer;");
 				while (rs_business.next()) {
 					System.out.println("Check whether customer with name: " + rs_business.getString("Name") + " exists.");
-					if (((BusinessCustomer) customerEntity).getName().equals(rs_business.getString("Name"))) {
+					if ((customerEntity).getName().equals(rs_business.getString("Name"))) {
 						System.out.println("Customer already exists in database");
 						customerExists = true;
 					}
 				}
 
-			}
+			}*/
 
-		} catch (SQLException e) {
+		 catch (SQLException e) {
 			System.err.println(e.getMessage());
 		} finally {
 			try {
@@ -178,11 +184,10 @@ public class Contract {
 		boolean customerExists = false;
 
 		Class.forName("org.sqlite.JDBC");
-customerIsPrivate=0;
 		Connection connection = null;
 		try {
 			// create a database connection
-			connection = DriverManager.getConnection("jdbc:sqlite:C:/Users/Felix Laptop/git/Workflow/Datenbank.db");
+			connection = DriverManager.getConnection("jdbc:sqlite:C:/Users/Felix/git/Workflow/Datenbank.db");
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30); 
 
