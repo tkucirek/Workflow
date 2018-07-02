@@ -178,7 +178,7 @@ public class Contract {
 		boolean customerExists = false;
 
 		Class.forName("org.sqlite.JDBC");
-
+customerIsPrivate=0;
 		Connection connection = null;
 		try {
 			// create a database connection
@@ -188,14 +188,13 @@ public class Contract {
 
 			String dbname = (customerEntity).getName();
 			int dbNumberOfClaims = 0;
-			int dbIsPrivate = 1; // only privateCustomers are inserted here
 			
 			//set the information from the customerEntity
 			
 
 			//insert values into the database
-			String insertStatement = "INSERT INTO Customer(name,numberOfClaims,business_customer) VALUES('" + dbname
-					+ "','" + dbNumberOfClaims + "','" + dbIsPrivate + "')";
+			String insertStatement = "INSERT INTO Customer(name,numberOfClaims,customer_type) VALUES('" + dbname
+					+ "','" + dbNumberOfClaims + "','" + customerIsPrivate + "')";
 			PreparedStatement ps = connection.prepareStatement(insertStatement);
 			ps.executeUpdate();
 
@@ -213,9 +212,9 @@ public class Contract {
 			PreparedStatement ps2 = connection.prepareStatement(insertStatement2);
 			ps2.executeUpdate();
 			}
-			else {
-				String insertStatement3 = "INSERT INTO Businesscustomer(Id,Company name) VALUES('"
-						+ dbCustomerId +"','" + dbbirthday + "','" + dbname + "')";
+			else if (customerIsPrivate==0) {
+				String insertStatement3 = "INSERT INTO FirmCustomer(Id,Company_name) VALUES('"
+						+ dbCustomerId +"','" + dbname + "')";
 				PreparedStatement ps3 = connection.prepareStatement(insertStatement3);
 				ps3.executeUpdate();
 				
