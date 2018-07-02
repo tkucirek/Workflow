@@ -123,7 +123,7 @@ public class Contract {
 		Connection connection = null;
 		try {
 			// create a database connection
-			connection = DriverManager.getConnection("jdbc:sqlite:C:/Users/Felix/git/Workflow/Datenbank.db");
+			connection = DriverManager.getConnection("jdbc:sqlite:C:/Users/Felix Laptop/git/Workflow/Datenbank.db");
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30); 
 			
@@ -187,8 +187,7 @@ public class Contract {
 			statement.setQueryTimeout(30); 
 
 			String dbname = (customerEntity).getName();
-			String dbbirthday = ((PrivateCustomer) customerEntity).getDateOfBirth();
-			int dbNumberOfClaims = 1;
+			int dbNumberOfClaims = 0;
 			int dbIsPrivate = 1; // only privateCustomers are inserted here
 			
 			//set the information from the customerEntity
@@ -206,10 +205,21 @@ public class Contract {
 					"SELECT Id FROM Customer WHERE Id = (SELECT MAX(Id) FROM Customer)");
 			int dbCustomerId = rs_current.getInt("Id");
 			System.out.println("zweite");
+			if (customerIsPrivate==1) {
+				String dbbirthday = ((PrivateCustomer) customerEntity).getDateOfBirth();
+			
 			String insertStatement2 = "INSERT INTO PrivateCustomer(Id,Birthday,Name) VALUES('"
 					+ dbCustomerId + "','" + dbbirthday + "','" + dbname + "')";
 			PreparedStatement ps2 = connection.prepareStatement(insertStatement2);
 			ps2.executeUpdate();
+			}
+			else {
+				String insertStatement3 = "INSERT INTO Businesscustomer(Id,Company name) VALUES('"
+						+ dbCustomerId +"','" + dbbirthday + "','" + dbname + "')";
+				PreparedStatement ps3 = connection.prepareStatement(insertStatement3);
+				ps3.executeUpdate();
+				
+			}
 
 			System.out.println("Customer entry has been created.");
 
@@ -224,7 +234,7 @@ public class Contract {
 			}
 		}
 
-		//test.setVariable("contractId", dbContractId);
+		
 		//System.out.println("The current contractId is " + dbContractId + ".");
 }
 	public void updateDatabase (DelegateExecution test) {
