@@ -65,13 +65,16 @@ public class Contract {
 			this.setCustomerEntity(new BusinessCustomer());
 			((BusinessCustomer) customerEntity).setName((String) variables.get("name"));
 		}
-	    
+	    BvisId=Long.valueOf((String) variables.get("bvisProcessId"));
 	    // Set order attributes for contract
 	    this.setContractEntity(new ContractEntity());
 	    contractEntity.setCustomerId(customerEntity.getId());
-	    //contractEntity.setDuration((Long)variables.get("rental_duration"));
+	    contractEntity.setDuration(Long.valueOf((String) variables.get("rental_duration")));
+	    contractEntity.setVehicle_model(Long.valueOf((String) variables.get("vehicle_model")));
+	    contractEntity.setNumber_of_vehicles(Long.valueOf((String) variables.get("number_of_vehicles")));
 	    //contractEntity.setVehicle_model((Long) variables.get("vehicle_model"));
 	    //contractEntity.setNumber_of_vehicles((Long) variables.get("number_of_vehicles"));
+	   
 	    
 	    
 	    // Persist order instance and flush. After the flush the
@@ -84,7 +87,10 @@ public class Contract {
 	    test.removeVariables(variables.keySet());
 
 	    // Add newly created order id as process variable
-	    test.setVariable("orderId", contractEntity.getId());
+	    test.setVariable("rental_duration", contractEntity.getDuration());
+	    test.setVariable("vehicle_model", contractEntity.getVehicle_model());
+	    test.setVariable("number_of_vehicles", contractEntity.getNumber_of_vehicles());
+	    test.setVariable("contractId", contractEntity.getId());
 		test.setVariable("BvisId", BvisId);
 		test.setVariable("contractEntity", contractEntity);
 		test.setVariable("customerEntity", customerEntity);
@@ -123,7 +129,7 @@ public class Contract {
 		Connection connection = null;
 		try {
 			// create a database connection
-			connection = DriverManager.getConnection("jdbc:sqlite:C:/Users/Felix/git/Workflow/Datenbank.db");
+			connection = DriverManager.getConnection("jdbc:sqlite:C:/Users/Felix Laptop/git/Workflow/Datenbank.db");
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30); 
 			
@@ -187,7 +193,7 @@ public class Contract {
 		Connection connection = null;
 		try {
 			// create a database connection
-			connection = DriverManager.getConnection("jdbc:sqlite:C:/Users/Felix/git/Workflow/Datenbank.db");
+			connection = DriverManager.getConnection("jdbc:sqlite:C:/Users/Felix Laptop/git/Workflow/Datenbank.db");
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30); 
 
@@ -241,9 +247,6 @@ public class Contract {
 		
 		//System.out.println("The current contractId is " + dbContractId + ".");
 }
-	public void updateDatabase (DelegateExecution test) {
-		
-	}
 	public void evaluateCustomer (DelegateExecution test) {
 		
 	}
