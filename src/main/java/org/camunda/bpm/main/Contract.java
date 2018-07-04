@@ -260,14 +260,73 @@ public class Contract {
 			else if (age >= 65) {
 				insuranceClass = "C";
 			}
-		}
-		else if (customerIsPrivate==0){
-		insuranceClass = "Business";
+		} else if (customerIsPrivate == 0) {
+			insuranceClass = "Business";
 		}
 		test.setVariable("insurance class", insuranceClass);
 	}
 
-	public void calculateFees(DelegateExecution test) {
+	public void calculatePremium(DelegateExecution test) {
+		long price = 0;
+		Map<String, Object> variables = test.getVariables();
+		long duration =contractEntity.getDuration();
+		String insuranceClass = (String) variables.get("insurance class");
+		long model =contractEntity.getVehicle_model();
+		long numberOfVehicles=contractEntity.getNumber_of_vehicles();
+
+		if (insuranceClass.equals("A") & model == 1) {
+			price = 15;
+		}
+		if (insuranceClass.equals("A") & model == 2) {
+			price = 20;
+		}
+		if (insuranceClass.equals("A") & model == 3) {
+			price = 25;
+		}
+		if (insuranceClass.equals("A") & model == 4) {
+			price = 30;
+		}
+		if (insuranceClass.equals("A") & model == 5) {
+			price = 35;
+		}
+		if (insuranceClass.equals("B") & model == 1) {
+			price = 10;
+		}
+		if (insuranceClass.equals("B") & model == 2) {
+			price = 15;
+		}
+		if (insuranceClass.equals("B") & model == 3) {
+			price = 20;
+		}
+		if (insuranceClass.equals("B") & model == 4) {
+			price = 25;
+		}
+		if (insuranceClass.equals("B") & model == 5) {
+			price = 30;
+		}
+		if (insuranceClass.equals("C") & model == 1) {
+			price = 20;
+		}
+		if (insuranceClass.equals("C") & model == 2) {
+			price = 25;
+		}
+		if (insuranceClass.equals("C") & model == 3) {
+			price = 30;
+		}
+		if (insuranceClass.equals("C") & model == 4) {
+			price = 35;
+		}
+		if (insuranceClass.equals("C") & model == 5) {
+			price = 40;
+		} else if (insuranceClass.equals("Business"))
+			price = 20; // model does not matter for business customers
+		price = price * duration* numberOfVehicles;
+		System.out.println(" Preis für Modell "+model+" für Zeitraum von "+duration+" Tage und anzahl "+numberOfVehicles+" ist "+price);
+
+		long fullCoveragePrice = price * 3;
+		long semiCoveragePrice = price * 2;
+		System.out.println(fullCoveragePrice);
+		System.out.println(semiCoveragePrice);
 
 	}
 

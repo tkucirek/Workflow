@@ -58,7 +58,7 @@
       <bpmn:incoming>customer_not_in_database</bpmn:incoming>
       <bpmn:outgoing>entry_created</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="calculate_insurance_premium" name="Calculate insurance premium" camunda:expression="${true}">
+    <bpmn:serviceTask id="calculate_insurance_premium" name="Calculate insurance premium" camunda:expression="${contract.calculatePremium(execution)}">
       <bpmn:incoming>SequenceFlow_1m2gn8s</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0v4k1mm</bpmn:outgoing>
     </bpmn:serviceTask>
