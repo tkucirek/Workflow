@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1wqpg3d" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="1.15.1">
+  <bpmn:collaboration id="Collaboration_0eg8kno">
+    <bpmn:participant id="contracting_process" name="Contracting process" processRef="contracting" />
+  </bpmn:collaboration>
+  <bpmn:process id="contracting" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_0xbpb5n">
+      <bpmn:lane id="Lane_18apn5c" name="Automated">
+        <bpmn:flowNodeRef>customer_requirement_recieved</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_1yqxsinCompare_against_internal_customer_data</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>customer_in_database_closing</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>customer_in_database</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>evaluate_customer</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>create_new_customer_entry</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>calculate_insurance_premium</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>event_gateway1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>record_contract</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>collect_inurance_fees</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>contract_received</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>send_invoice</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>create_and_send_insurance_offering</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_0fntybt</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_10e3s8u" name="Manual ">
+        <bpmn:flowNodeRef>terminate_contract</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>IntermediateCatchEvent_04hrj0n</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>contract_failed</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="customer_requirement_recieved" name="Customer requirements recieved" camunda:formKey="app:contract.jsf">
+      <bpmn:outgoing>SequenceFlow_0lqgarw</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:dataStoreReference id="customer_database_read" name="Customer database" />
+    <bpmn:serviceTask id="Task_1yqxsinCompare_against_internal_customer_data" name="Compare against internal customer data" camunda:expression="${contract.compareToDatabase(execution)}">
+      <bpmn:incoming>SequenceFlow_1g2qrkp</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0eyhs8f</bpmn:outgoing>
+      <bpmn:property id="Property_0pj4dw7" name="__targetRef_placeholder" />
+      <bpmn:dataInputAssociation id="DataInputAssociation_0h1eko3">
+        <bpmn:sourceRef>customer_database_read</bpmn:sourceRef>
+        <bpmn:targetRef>Property_0pj4dw7</bpmn:targetRef>
+      </bpmn:dataInputAssociation>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="customer_in_database" name="Customer in database?">
+      <bpmn:incoming>SequenceFlow_0eyhs8f</bpmn:incoming>
+      <bpmn:outgoing>customer_not_in_database</bpmn:outgoing>
+      <bpmn:outgoing>customer_exists_in_database</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="customer_in_database_closing">
+      <bpmn:incoming>entry_created</bpmn:incoming>
+      <bpmn:incoming>customer_exists_in_database</bpmn:incoming>
+      <bpmn:outgoing>database_to_update</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="evaluate_customer" name="Evaluate Customer" camunda:expression="${true}">
+      <bpmn:incoming>database_to_update</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1m2gn8s</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="create_new_customer_entry" name="Create new customer entry" camunda:expression="${contract.createNewEntry(execution)}">
+      <bpmn:incoming>customer_not_in_database</bpmn:incoming>
+      <bpmn:outgoing>entry_created</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="calculate_insurance_premium" name="Calculate insurance premium" camunda:expression="${true}">
+      <bpmn:incoming>SequenceFlow_1m2gn8s</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0v4k1mm</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:eventBasedGateway id="event_gateway1">
+      <bpmn:incoming>SequenceFlow_1te7xei</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1suy8p4</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_0jooqld</bpmn:outgoing>
+    </bpmn:eventBasedGateway>
+    <bpmn:intermediateCatchEvent id="contract_received" name="Contract received">
+      <bpmn:incoming>SequenceFlow_0jooqld</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1cmrjy0</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_1n6dn6g" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:dataStoreReference id="contract_database" name="Contract database" />
+    <bpmn:serviceTask id="record_contract" name="Record contract" camunda:expression="${true}">
+      <bpmn:incoming>SequenceFlow_1cmrjy0</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1dp4del</bpmn:outgoing>
+      <bpmn:dataOutputAssociation id="DataOutputAssociation_17qo2qx">
+        <bpmn:targetRef>contract_database</bpmn:targetRef>
+      </bpmn:dataOutputAssociation>
+    </bpmn:serviceTask>
+    <bpmn:task id="collect_inurance_fees" name="Collect insurance fees">
+      <bpmn:incoming>SequenceFlow_0ilbif6</bpmn:incoming>
+    </bpmn:task>
+    <bpmn:intermediateCatchEvent id="IntermediateCatchEvent_04hrj0n" name="Wait 1 week">
+      <bpmn:incoming>SequenceFlow_1suy8p4</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1thu2x9</bpmn:outgoing>
+      <bpmn:timerEventDefinition>
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">P10D</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:userTask id="terminate_contract" name="Terminate contract">
+      <bpmn:incoming>SequenceFlow_1thu2x9</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1anliaq</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="contract_failed" name="Contract failed">
+      <bpmn:incoming>SequenceFlow_1anliaq</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_0lqgarw" sourceRef="customer_requirement_recieved" targetRef="Task_0fntybt" />
+    <bpmn:sequenceFlow id="SequenceFlow_0eyhs8f" sourceRef="Task_1yqxsinCompare_against_internal_customer_data" targetRef="customer_in_database" />
+    <bpmn:sequenceFlow id="customer_not_in_database" name="No" sourceRef="customer_in_database" targetRef="create_new_customer_entry">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${not customerExists}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="customer_exists_in_database" name="Yes" sourceRef="customer_in_database" targetRef="customer_in_database_closing">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${customerExists}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="entry_created" sourceRef="create_new_customer_entry" targetRef="customer_in_database_closing" />
+    <bpmn:sequenceFlow id="database_to_update" sourceRef="customer_in_database_closing" targetRef="evaluate_customer" />
+    <bpmn:sequenceFlow id="SequenceFlow_1m2gn8s" sourceRef="evaluate_customer" targetRef="calculate_insurance_premium" />
+    <bpmn:sequenceFlow id="SequenceFlow_0v4k1mm" sourceRef="calculate_insurance_premium" targetRef="create_and_send_insurance_offering" />
+    <bpmn:sequenceFlow id="SequenceFlow_1te7xei" sourceRef="create_and_send_insurance_offering" targetRef="event_gateway1" />
+    <bpmn:sequenceFlow id="SequenceFlow_1suy8p4" sourceRef="event_gateway1" targetRef="IntermediateCatchEvent_04hrj0n" />
+    <bpmn:sequenceFlow id="SequenceFlow_1thu2x9" sourceRef="IntermediateCatchEvent_04hrj0n" targetRef="terminate_contract" />
+    <bpmn:sequenceFlow id="SequenceFlow_0jooqld" sourceRef="event_gateway1" targetRef="contract_received" />
+    <bpmn:sequenceFlow id="SequenceFlow_1cmrjy0" sourceRef="contract_received" targetRef="record_contract" />
+    <bpmn:sequenceFlow id="SequenceFlow_1dp4del" sourceRef="record_contract" targetRef="send_invoice" />
+    <bpmn:sequenceFlow id="SequenceFlow_0ilbif6" sourceRef="send_invoice" targetRef="collect_inurance_fees" />
+    <bpmn:sequenceFlow id="SequenceFlow_1anliaq" sourceRef="terminate_contract" targetRef="contract_failed" />
+    <bpmn:serviceTask id="send_invoice" name="Send invoice" camunda:expression="${true}">
+      <bpmn:incoming>SequenceFlow_1dp4del</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0ilbif6</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="create_and_send_insurance_offering" name="Create and send insurance offering" camunda:expression="${true}">
+      <bpmn:incoming>SequenceFlow_0v4k1mm</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1te7xei</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="SequenceFlow_1g2qrkp" sourceRef="Task_0fntybt" targetRef="Task_1yqxsinCompare_against_internal_customer_data" />
+    <bpmn:serviceTask id="Task_0fntybt" name="Persist contract" camunda:expression="${contract.persistContract(execution)}">
+      <bpmn:incoming>SequenceFlow_0lqgarw</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1g2qrkp</bpmn:outgoing>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmn:message id="Message_1n6dn6g" name="Message_0nkug2r" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0eg8kno">
+      <bpmndi:BPMNShape id="Participant_0pygkfv_di" bpmnElement="contracting_process">
+        <dc:Bounds x="79" y="-313" width="2344" height="845" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="customer_requirement_recieved">
+        <dc:Bounds x="173" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="159" y="145" width="65" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataStoreReference_197cnoc_di" bpmnElement="customer_database_read">
+        <dc:Bounds x="434" y="232" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_0barblu_di" bpmnElement="Task_1yqxsinCompare_against_internal_customer_data">
+        <dc:Bounds x="409" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveGateway_02d2919_di" bpmnElement="customer_in_database" isMarkerVisible="true">
+        <dc:Bounds x="581" y="95" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="576" y="152" width="60" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveGateway_1o3hkpy_di" bpmnElement="customer_in_database_closing" isMarkerVisible="true">
+        <dc:Bounds x="913" y="95" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_07hycfo_di" bpmnElement="evaluate_customer">
+        <dc:Bounds x="1185" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_09qvfqz_di" bpmnElement="create_new_customer_entry">
+        <dc:Bounds x="556" y="-56" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_0qnu53o_di" bpmnElement="calculate_insurance_premium">
+        <dc:Bounds x="1371" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EventBasedGateway_07jhb45_di" bpmnElement="event_gateway1">
+        <dc:Bounds x="1729" y="95" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="IntermediateCatchEvent_1v3jhvn_di" bpmnElement="contract_received">
+        <dc:Bounds x="1851" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1826" y="145" width="87" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataStoreReference_1w1ct2c_di" bpmnElement="contract_database">
+        <dc:Bounds x="1984" y="-65.25" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1986" y="-102.75" width="46" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_1qcl4ib_di" bpmnElement="record_contract">
+        <dc:Bounds x="1959" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_1598kl6_di" bpmnElement="collect_inurance_fees">
+        <dc:Bounds x="2303" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="IntermediateCatchEvent_04hrj0n_di" bpmnElement="IntermediateCatchEvent_04hrj0n">
+        <dc:Bounds x="1736" y="-269" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1724" y="-293" width="60" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_0wexasj_di" bpmnElement="terminate_contract">
+        <dc:Bounds x="1873" y="-291" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_14albjp_di" bpmnElement="contract_failed">
+        <dc:Bounds x="2101" y="-269" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2083" y="-293" width="72" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0lqgarw_di" bpmnElement="SequenceFlow_0lqgarw">
+        <di:waypoint x="209" y="120" />
+        <di:waypoint x="266" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0eyhs8f_di" bpmnElement="SequenceFlow_0eyhs8f">
+        <di:waypoint x="509" y="120" />
+        <di:waypoint x="581" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1sfeuh4_di" bpmnElement="customer_not_in_database">
+        <di:waypoint x="606" y="95" />
+        <di:waypoint x="606" y="24" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="614" y="57" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0xlz9il_di" bpmnElement="customer_exists_in_database">
+        <di:waypoint x="631" y="120" />
+        <di:waypoint x="913" y="120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="766" y="102" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1ukz1ws_di" bpmnElement="entry_created">
+        <di:waypoint x="656" y="-16" />
+        <di:waypoint x="938" y="-16" />
+        <di:waypoint x="938" y="95" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0md1hle_di" bpmnElement="database_to_update">
+        <di:waypoint x="963" y="120" />
+        <di:waypoint x="1185" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1m2gn8s_di" bpmnElement="SequenceFlow_1m2gn8s">
+        <di:waypoint x="1285" y="120" />
+        <di:waypoint x="1371" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0v4k1mm_di" bpmnElement="SequenceFlow_0v4k1mm">
+        <di:waypoint x="1471" y="120" />
+        <di:waypoint x="1557" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1te7xei_di" bpmnElement="SequenceFlow_1te7xei">
+        <di:waypoint x="1657" y="120" />
+        <di:waypoint x="1729" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1suy8p4_di" bpmnElement="SequenceFlow_1suy8p4">
+        <di:waypoint x="1754" y="95" />
+        <di:waypoint x="1754" y="-233" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1thu2x9_di" bpmnElement="SequenceFlow_1thu2x9">
+        <di:waypoint x="1772" y="-251" />
+        <di:waypoint x="1873" y="-251" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0jooqld_di" bpmnElement="SequenceFlow_0jooqld">
+        <di:waypoint x="1779" y="120" />
+        <di:waypoint x="1851" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1cmrjy0_di" bpmnElement="SequenceFlow_1cmrjy0">
+        <di:waypoint x="1887" y="120" />
+        <di:waypoint x="1959" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1dp4del_di" bpmnElement="SequenceFlow_1dp4del">
+        <di:waypoint x="2059" y="120" />
+        <di:waypoint x="2131" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0ilbif6_di" bpmnElement="SequenceFlow_0ilbif6">
+        <di:waypoint x="2231" y="120" />
+        <di:waypoint x="2303" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1anliaq_di" bpmnElement="SequenceFlow_1anliaq">
+        <di:waypoint x="1973" y="-251" />
+        <di:waypoint x="2101" y="-251" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DataInputAssociation_0h1eko3_di" bpmnElement="DataInputAssociation_0h1eko3">
+        <di:waypoint x="459" y="232" />
+        <di:waypoint x="459" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DataOutputAssociation_17qo2qx_di" bpmnElement="DataOutputAssociation_17qo2qx">
+        <di:waypoint x="2009" y="80" />
+        <di:waypoint x="2009" y="-15" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Lane_18apn5c_di" bpmnElement="Lane_18apn5c">
+        <dc:Bounds x="109" y="-107" width="2314" height="639" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_10e3s8u_di" bpmnElement="Lane_10e3s8u">
+        <dc:Bounds x="109" y="-313" width="2314" height="206" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_1k0rbh2_di" bpmnElement="send_invoice">
+        <dc:Bounds x="2131" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_12d1dbd_di" bpmnElement="create_and_send_insurance_offering">
+        <dc:Bounds x="1557" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1g2qrkp_di" bpmnElement="SequenceFlow_1g2qrkp">
+        <di:waypoint x="366" y="120" />
+        <di:waypoint x="409" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_0kxmidp_di" bpmnElement="Task_0fntybt">
+        <dc:Bounds x="266" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
