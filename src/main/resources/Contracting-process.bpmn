@@ -50,7 +50,7 @@
       <bpmn:incoming>customer_exists_in_database</bpmn:incoming>
       <bpmn:outgoing>database_to_update</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="evaluate_customer" name="Evaluate Customer" camunda:expression="${true}">
+    <bpmn:serviceTask id="evaluate_customer" name="Evaluate Customer" camunda:expression="${contract.evaluateCustomer(execution)}">
       <bpmn:incoming>database_to_update</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1m2gn8s</bpmn:outgoing>
     </bpmn:serviceTask>
