@@ -40,6 +40,43 @@
     <version>1.1.0</version>
 </dependency>
 
+<dependency>
+      <groupId>org.jboss.spec</groupId>
+      <artifactId>jboss-javaee-7.0</artifactId>
+      <version>1.0.3.Final</version>
+      <type>pom</type>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>xalan</artifactId>
+          <groupId>xalan</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>   
+    
+    <dependency>
+    <groupId>org.jboss.resteasy</groupId>
+    <artifactId>resteasy-client</artifactId>
+    <version>3.0.9.Final</version>
+</dependency>
+
+<dependency>
+  			<groupId>com.itextpdf</groupId>
+  			<artifactId>itextpdf</artifactId>
+  			<version>5.5.11</version>
+		</dependency>
+		
+		<dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-jaxrs</artifactId>
+        <version>3.0.6.Final</version>
+    </dependency>
+    <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-jackson-provider</artifactId>
+        <version>3.0.6.Final</version>
+    </dependency>
+    
     <!-- Camunda cdi beans -->
     <dependency>
       <groupId>org.camunda.bpm</groupId>

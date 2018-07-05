@@ -57,7 +57,7 @@ public class Contract {
 			throw new RuntimeException("Cannot complete task", e);
 		}
 	}
-	public void createContract(Map<String, Object> variables, DelegateExecution delegateExecution) {
+	public void createContract(Map<String, Object> variables, DelegateExecution test) {
 		// Create new contract instance
 		this.setContractEntity(new ContractEntity());
 
@@ -140,7 +140,7 @@ public class Contract {
 		Connection connection = null;
 		try {
 			// create a database connection
-			connection = DriverManager.getConnection("jdbc:sqlite:C:/Users/Felix Laptop/git/Workflow/Datenbank2.db");
+			connection = DriverManager.getConnection(Customize.databasepath);
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30);
 
@@ -179,7 +179,7 @@ public class Contract {
 		Connection connection = null;
 		try {
 			// create a database connection
-			connection = DriverManager.getConnection("jdbc:sqlite:C:/Users/Felix Laptop/git/Workflow/Datenbank2.db");
+			connection = DriverManager.getConnection(Customize.databasepath);
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30);
 

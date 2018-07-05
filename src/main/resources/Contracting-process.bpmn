@@ -15,11 +15,11 @@
         <bpmn:flowNodeRef>calculate_insurance_premium</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>event_gateway1</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>record_contract</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>collect_inurance_fees</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>contract_received</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>send_invoice</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Task_0fntybt</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>create_and_send_insurance_offering</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>collect_inurance_fees</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="Lane_10e3s8u" name="Manual ">
         <bpmn:flowNodeRef>terminate_contract</bpmn:flowNodeRef>
@@ -80,9 +80,6 @@
         <bpmn:targetRef>contract_database</bpmn:targetRef>
       </bpmn:dataOutputAssociation>
     </bpmn:serviceTask>
-    <bpmn:task id="collect_inurance_fees" name="Collect insurance fees">
-      <bpmn:incoming>SequenceFlow_0ilbif6</bpmn:incoming>
-    </bpmn:task>
     <bpmn:intermediateCatchEvent id="IntermediateCatchEvent_04hrj0n" name="Wait 1 week">
       <bpmn:incoming>SequenceFlow_1suy8p4</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1thu2x9</bpmn:outgoing>
@@ -130,6 +127,9 @@
       <bpmn:incoming>SequenceFlow_0v4k1mm</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1te7xei</bpmn:outgoing>
     </bpmn:sendTask>
+    <bpmn:userTask id="collect_inurance_fees" name="Collect insurance fees">
+      <bpmn:incoming>SequenceFlow_0ilbif6</bpmn:incoming>
+    </bpmn:userTask>
   </bpmn:process>
   <bpmn:message id="Message_1n6dn6g" name="Message_0nkug2r" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -184,9 +184,6 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ServiceTask_1qcl4ib_di" bpmnElement="record_contract">
         <dc:Bounds x="1959" y="80" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Task_1598kl6_di" bpmnElement="collect_inurance_fees">
-        <dc:Bounds x="2303" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="IntermediateCatchEvent_04hrj0n_di" bpmnElement="IntermediateCatchEvent_04hrj0n">
         <dc:Bounds x="1736" y="-269" width="36" height="36" />
@@ -300,6 +297,9 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="SendTask_01tj0ql_di" bpmnElement="create_and_send_insurance_offering">
         <dc:Bounds x="1557" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_0btt3ho_di" bpmnElement="collect_inurance_fees">
+        <dc:Bounds x="2303" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
