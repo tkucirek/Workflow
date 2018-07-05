@@ -1,13 +1,53 @@
 package org.camunda.bpm.entities;
 
+import java.io.Serializable;
 import java.util.ArrayList;
-
 import javax.persistence.Entity;
-public class ClaimEntity {
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Version;
+
+
+@Entity
+public class ClaimEntity implements Serializable{
 	
-	protected int contractId;
-	protected String damageAmount;
-	protected String dateOfAccident;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@GeneratedValue
+	protected Long id;
+	
+	
+	
+	
+	@Version
+	protected long version;
+	
+	protected Long customerId;
+	protected Long damageClassification;
 	protected boolean completed;
+	
+	
+	public long getCustomerId() {
+		return customerId;
+	}
+	public void setCustomerId(Long long1) {
+		this.customerId = long1;
+	}
+	public long getDamageClassification() {
+		return damageClassification;
+	}
+	public void setDamageClassification(Long long1) {
+		this.damageClassification = long1;
+	}
+	public boolean isCompleted() {
+		return completed;
+	}
+	public void setCompleted(boolean completed) {
+		this.completed = completed;
+	}
 
 }

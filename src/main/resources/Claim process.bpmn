@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1lk9j15" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="1.15.1">
+  <bpmn:collaboration id="Contract_database_2">
+    <bpmn:participant id="Participant_10cc24b" name="Capitol" processRef="claim-process" />
+  </bpmn:collaboration>
+  <bpmn:process id="claim-process" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_0g0o9l8">
+      <bpmn:lane id="Lane_00r98u7" name="Automated">
+        <bpmn:flowNodeRef>crosscheck_with_contract</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>check_damage</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>claim_finished_sucesfully</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>determine_deductible_amount</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_11pm7ou</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>send_payment</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>adjust_customer_damage_category</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>StartEvent_0ndngqm</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_0mnz1if</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_09xeg2m" name="Manual" />
+    </bpmn:laneSet>
+    <bpmn:sequenceFlow id="SequenceFlow_15wjx9m" sourceRef="check_damage" targetRef="crosscheck_with_contract" />
+    <bpmn:sequenceFlow id="SequenceFlow_0fsvjve" sourceRef="crosscheck_with_contract" targetRef="determine_deductible_amount" />
+    <bpmn:sequenceFlow id="SequenceFlow_04z86ur" sourceRef="determine_deductible_amount" targetRef="Task_11pm7ou" />
+    <bpmn:serviceTask id="crosscheck_with_contract" name="Crosscheck with contract" camunda:expression="${true}">
+      <bpmn:incoming>SequenceFlow_15wjx9m</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0fsvjve</bpmn:outgoing>
+      <bpmn:property id="Property_03jhn5h" name="__targetRef_placeholder" />
+      <bpmn:dataInputAssociation id="DataInputAssociation_01uow1c">
+        <bpmn:sourceRef>contract_database_1</bpmn:sourceRef>
+        <bpmn:targetRef>Property_03jhn5h</bpmn:targetRef>
+      </bpmn:dataInputAssociation>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="check_damage" name="Check damage" camunda:expression="${claim.checkDamage(execution)}">
+      <bpmn:incoming>SequenceFlow_0fwdlem</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_15wjx9m</bpmn:outgoing>
+      <bpmn:dataOutputAssociation id="DataOutputAssociation_05b5cfi">
+        <bpmn:targetRef>damage_database</bpmn:targetRef>
+      </bpmn:dataOutputAssociation>
+      <bpmn:dataOutputAssociation id="DataOutputAssociation_08oxssk">
+        <bpmn:targetRef>damage_report</bpmn:targetRef>
+      </bpmn:dataOutputAssociation>
+    </bpmn:serviceTask>
+    <bpmn:dataObjectReference id="damage_report" name="Damage report" dataObjectRef="DataObject_1hnl1j7" />
+    <bpmn:dataObject id="DataObject_1hnl1j7" />
+    <bpmn:dataStoreReference id="contract_database_1" name="Contract database" />
+    <bpmn:dataStoreReference id="damage_database" name="Damage database" />
+    <bpmn:endEvent id="claim_finished_sucesfully" name="Claim finished sucesfully">
+      <bpmn:incoming>SequenceFlow_1fa1ohu</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_14mtc88" sourceRef="send_payment" targetRef="adjust_customer_damage_category" />
+    <bpmn:sequenceFlow id="SequenceFlow_1fa1ohu" sourceRef="adjust_customer_damage_category" targetRef="claim_finished_sucesfully" />
+    <bpmn:sequenceFlow id="SequenceFlow_0p59lh1" sourceRef="Task_11pm7ou" targetRef="send_payment" />
+    <bpmn:sequenceFlow id="SequenceFlow_0fwdlem" sourceRef="Task_0mnz1if" targetRef="check_damage" />
+    <bpmn:serviceTask id="determine_deductible_amount" name="Determine deductible amount" camunda:expression="${true}">
+      <bpmn:incoming>SequenceFlow_0fsvjve</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_04z86ur</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sendTask id="Task_11pm7ou" name="Send damage assessment" camunda:expression="${true}">
+      <bpmn:incoming>SequenceFlow_04z86ur</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0p59lh1</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:sendTask id="send_payment" name="Send payment" camunda:expression="${true}">
+      <bpmn:incoming>SequenceFlow_0p59lh1</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_14mtc88</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:serviceTask id="adjust_customer_damage_category" name="Adjust customer damage category" camunda:expression="${true}">
+      <bpmn:incoming>SequenceFlow_14mtc88</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1fa1ohu</bpmn:outgoing>
+      <bpmn:dataOutputAssociation id="DataOutputAssociation_1by7585">
+        <bpmn:targetRef>customer_database</bpmn:targetRef>
+      </bpmn:dataOutputAssociation>
+    </bpmn:serviceTask>
+    <bpmn:dataStoreReference id="customer_database" name="Customer database" />
+    <bpmn:startEvent id="StartEvent_0ndngqm" camunda:formKey="app:claim.jsf">
+      <bpmn:outgoing>SequenceFlow_0dt6xjf</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_0dt6xjf" sourceRef="StartEvent_0ndngqm" targetRef="Task_0mnz1if" />
+    <bpmn:serviceTask id="Task_0mnz1if" name="Persist Claim" camunda:expression="${claim.persistClaim(execution)}">
+      <bpmn:incoming>SequenceFlow_0dt6xjf</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0fwdlem</bpmn:outgoing>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Contract_database_2">
+      <bpmndi:BPMNShape id="Participant_10cc24b_di" bpmnElement="Participant_10cc24b">
+        <dc:Bounds x="204" y="352" width="1766" height="597" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataStoreReference_0y9i1ef_di" bpmnElement="damage_database">
+        <dc:Bounds x="673" y="669" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="675" y="726" width="46" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataStoreReference_1vjk54s_di" bpmnElement="contract_database_1">
+        <dc:Bounds x="824" y="669" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="827" y="726" width="46" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataObjectReference_1klwf86_di" bpmnElement="damage_report">
+        <dc:Bounds x="680" y="438" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="661" y="414" width="75" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_15wjx9m_di" bpmnElement="SequenceFlow_15wjx9m">
+        <di:waypoint x="748" y="591" />
+        <di:waypoint x="799" y="591" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_1j83ejx_di" bpmnElement="claim_finished_sucesfully">
+        <dc:Bounds x="1917" y="573" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1900" y="616" width="70" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0fsvjve_di" bpmnElement="SequenceFlow_0fsvjve">
+        <di:waypoint x="899" y="591" />
+        <di:waypoint x="977" y="591" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DataOutputAssociation_05b5cfi_di" bpmnElement="DataOutputAssociation_05b5cfi">
+        <di:waypoint x="698" y="631" />
+        <di:waypoint x="698" y="669" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DataOutputAssociation_08oxssk_di" bpmnElement="DataOutputAssociation_08oxssk">
+        <di:waypoint x="698" y="551" />
+        <di:waypoint x="698" y="488" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_04z86ur_di" bpmnElement="SequenceFlow_04z86ur">
+        <di:waypoint x="1077" y="591" />
+        <di:waypoint x="1143" y="591" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="DataStoreReference_0c6rsoi_di" bpmnElement="customer_database">
+        <dc:Bounds x="1520" y="669" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1521" y="726" width="49" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="DataOutputAssociation_1by7585_di" bpmnElement="DataOutputAssociation_1by7585">
+        <di:waypoint x="1544" y="631" />
+        <di:waypoint x="1545" y="669" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1fa1ohu_di" bpmnElement="SequenceFlow_1fa1ohu">
+        <di:waypoint x="1595" y="589" />
+        <di:waypoint x="1917" y="591" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="SendTask_1fw5j26_di" bpmnElement="send_payment">
+        <dc:Bounds x="1311" y="551" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_0792wp3_di" bpmnElement="determine_deductible_amount">
+        <dc:Bounds x="977" y="551" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_1wyni94_di" bpmnElement="check_damage">
+        <dc:Bounds x="648" y="551" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_0za437b_di" bpmnElement="crosscheck_with_contract">
+        <dc:Bounds x="799" y="551" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="DataInputAssociation_01uow1c_di" bpmnElement="DataInputAssociation_01uow1c">
+        <di:waypoint x="849" y="669" />
+        <di:waypoint x="849" y="631" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_027e915_di" bpmnElement="adjust_customer_damage_category">
+        <dc:Bounds x="1495" y="551" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_14mtc88_di" bpmnElement="SequenceFlow_14mtc88">
+        <di:waypoint x="1411" y="591" />
+        <di:waypoint x="1495" y="591" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Lane_00r98u7_di" bpmnElement="Lane_00r98u7">
+        <dc:Bounds x="234" y="352" width="1736" height="424" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_09xeg2m_di" bpmnElement="Lane_09xeg2m">
+        <dc:Bounds x="234" y="776" width="1736" height="173" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0p59lh1_di" bpmnElement="SequenceFlow_0p59lh1">
+        <di:waypoint x="1243" y="591" />
+        <di:waypoint x="1311" y="591" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="SendTask_0lmgfqc_di" bpmnElement="Task_11pm7ou">
+        <dc:Bounds x="1143" y="551" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0fwdlem_di" bpmnElement="SequenceFlow_0fwdlem">
+        <di:waypoint x="458" y="591" />
+        <di:waypoint x="648" y="591" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="StartEvent_0ndngqm_di" bpmnElement="StartEvent_0ndngqm">
+        <dc:Bounds x="280.336" y="573" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0dt6xjf_di" bpmnElement="SequenceFlow_0dt6xjf">
+        <di:waypoint x="316" y="591" />
+        <di:waypoint x="358" y="591" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_0mk9jm1_di" bpmnElement="Task_0mnz1if">
+        <dc:Bounds x="358" y="551" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
