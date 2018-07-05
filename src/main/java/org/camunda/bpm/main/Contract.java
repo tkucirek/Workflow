@@ -1,10 +1,15 @@
 package org.camunda.bpm.main;
+
 import org.camunda.bpm.engine.*;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.entities.BusinessCustomer;
 import org.camunda.bpm.entities.ContractEntity;
 import org.camunda.bpm.entities.CustomerEntity;
 import org.camunda.bpm.entities.PrivateCustomer;
+import org.camunda.bpm.messages.InsuranceOffering;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import org.camunda.bpm.engine.cdi.jsf.TaskForm;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.cdi.jsf.TaskForm;
@@ -22,75 +27,73 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Map;
 
 @Stateless
 @Named
 public class Contract {
 	@PersistenceContext
-	  private EntityManager entityManager;
+	private EntityManager entityManager;
 	@Inject
-	  private TaskForm taskForm;
-	
-	  private ContractEntity contractEntity;
-	  private CustomerEntity customerEntity;
-	  private Integer customerIsPrivate;
-	  private Long BvisId;
-	  
-	  public void mergeOrderAndCompleteTask(ContractEntity contractEntity) {
-			// Merge detached order entity with current persisted state
-			entityManager.merge(contractEntity);
-			try {
-				// Complete user task from
-				taskForm.completeTask();
-			} catch (IOException e) {
-				// Rollback both transactions on error
-				throw new RuntimeException("Cannot complete task", e);
-			}
+	private TaskForm taskForm;
+
+	private ContractEntity contractEntity;
+	private CustomerEntity customerEntity;
+	private InsuranceOffering insuranceOffering;
+	private Integer customerIsPrivate;
+	private Long BvisId;
+
+	public void mergeOrderAndCompleteTask(ContractEntity contractEntity) {
+		// Merge detached order entity with current persisted state
+		entityManager.merge(contractEntity);
+		try {
+			// Complete user task from
+			taskForm.completeTask();
+		} catch (IOException e) {
+			// Rollback both transactions on error
+			throw new RuntimeException("Cannot complete task", e);
 		}
-	  
-	public void persistContract (DelegateExecution test) {
-		
-	    Map<String, Object> variables = test.getVariables();// Get all process variables
-	    //BvisId=(Long) variables.get("bvisProcessId"); // Get Bvis process Id
-	   
-	    // Create customer and set order attributes for customer
-	    if (variables.get("Customer_type").equals("private")) {
-			customerIsPrivate=1;
+	}
+
+	public void persistContract(DelegateExecution test) {
+
+		Map<String, Object> variables = test.getVariables();// Get all process variables
+
+		// Create customer and set order attributes for customer
+		if (variables.get("Customer_type").equals("private")) {
+			customerIsPrivate = 1;
 			this.setCustomerEntity(new PrivateCustomer());
 			((PrivateCustomer) customerEntity).setName((String) variables.get("name"));
 			((PrivateCustomer) customerEntity).setDateOfBirth((String) variables.get("birthdate"));
 		} else {
-			customerIsPrivate=0;
+			customerIsPrivate = 0;
 			this.setCustomerEntity(new BusinessCustomer());
 			((BusinessCustomer) customerEntity).setName((String) variables.get("name"));
 		}
-	    BvisId=Long.valueOf((String) variables.get("bvisProcessId"));
-	    // Set order attributes for contract
-	    this.setContractEntity(new ContractEntity());
-	    contractEntity.setCustomerId(customerEntity.getId());
-	    contractEntity.setDuration(Long.valueOf((String) variables.get("rental_duration")));
-	    contractEntity.setVehicle_model(Long.valueOf((String) variables.get("vehicle_model")));
-	    contractEntity.setNumber_of_vehicles(Long.valueOf((String) variables.get("number_of_vehicles")));
-	    //contractEntity.setVehicle_model((Long) variables.get("vehicle_model"));
-	    //contractEntity.setNumber_of_vehicles((Long) variables.get("number_of_vehicles"));
-	   
-	    
-	    
-	    // Persist order instance and flush. After the flush the
-	    // id of the order instance is set.
-	    entityManager.persist(customerEntity);
-	    entityManager.persist(contractEntity);
-	    entityManager.flush();
+		BvisId = Long.valueOf((String) variables.get("bvisProcessId"));
+		// Set order attributes for contract
+		this.setContractEntity(new ContractEntity());
+		contractEntity.setCustomerId(customerEntity.getId());
+		contractEntity.setDuration(Long.valueOf((String) variables.get("rental_duration")));
+		contractEntity.setVehicle_model(Long.valueOf((String) variables.get("vehicle_model")));
+		contractEntity.setNumber_of_vehicles(Long.valueOf((String) variables.get("number_of_vehicles")));
 
-	    // Remove no longer needed process variables
-	    test.removeVariables(variables.keySet());
+		// Persist order instance and flush. After the flush the
+		// id of the order instance is set.
+		entityManager.persist(customerEntity);
+		entityManager.persist(contractEntity);
+		entityManager.flush();
 
-	    // Add newly created order id as process variable
-	    test.setVariable("rental_duration", contractEntity.getDuration());
-	    test.setVariable("vehicle_model", contractEntity.getVehicle_model());
-	    test.setVariable("number_of_vehicles", contractEntity.getNumber_of_vehicles());
-	    test.setVariable("contractId", contractEntity.getId());
+		// Remove no longer needed process variables
+		test.removeVariables(variables.keySet());
+
+		// Add newly created order id as process variable
+		test.setVariable("rental_duration", contractEntity.getDuration());
+		test.setVariable("vehicle_model", contractEntity.getVehicle_model());
+		test.setVariable("number_of_vehicles", contractEntity.getNumber_of_vehicles());
+		test.setVariable("contractId", contractEntity.getId());
 		test.setVariable("BvisId", BvisId);
 		test.setVariable("contractEntity", contractEntity);
 		test.setVariable("customerEntity", customerEntity);
@@ -99,75 +102,50 @@ public class Contract {
 	public void setCustomerEntity(CustomerEntity customerEntity) {
 		this.customerEntity = customerEntity;
 	}
-	
+
 	public CustomerEntity getCustomer(Long customerId) {
 		// Load customer entity from database
-		if (customerIsPrivate==1) {
+		if (customerIsPrivate == 1) {
 			return entityManager.find(PrivateCustomer.class, customerId);
 		} else
 			return entityManager.find(BusinessCustomer.class, customerId);
 	}
-	
+
 	public void setContractEntity(ContractEntity contractEntity) {
 		this.contractEntity = contractEntity;
 	}
-	
+
 	public ContractEntity getContract(Long contractId) {
 		// Load contract entity from database
 		return entityManager.find(ContractEntity.class, contractId);
 	}
 
-
-	public void compareToDatabase (DelegateExecution test) throws ClassNotFoundException {
+	public void compareToDatabase(DelegateExecution test) throws ClassNotFoundException {
 		System.out.println("User is now compared to the database");
 
 		Map<String, Object> variables = test.getVariables();
 		boolean customerExists = false;
-	
+
 		Class.forName("org.sqlite.JDBC");
 
 		Connection connection = null;
 		try {
 			// create a database connection
-			connection = DriverManager.getConnection("jdbc:sqlite:C:/Users/Felix Laptop/git/Workflow/Datenbank.db");
+			connection = DriverManager.getConnection("jdbc:sqlite:C:/Users/Felix Laptop/git/Workflow/Datenbank2.db");
 			Statement statement = connection.createStatement();
-			statement.setQueryTimeout(30); 
-			
+			statement.setQueryTimeout(30);
+
 			ResultSet result = statement.executeQuery("SELECT * from Customer;");
 			while (result.next()) {
-				System.out.println(
-						"Check whether customer with name: " + result.getString("Name") + "exists.");
-				if (( customerEntity).getName().equals(result.getString("Name"))) {
+				System.out.println("Check whether customer with name: " + result.getString("Name") + "exists.");
+				if ((customerEntity).getName().equals(result.getString("Name"))) {
 					System.out.println("Customer already exists in database");
-					customerExists = true;}}}
-			// Private Customers' uniqueness is checked via driverLicenseId
-			/*if (customerIsPrivate==1) {
-				ResultSet rs_private = statement.executeQuery("SELECT * from PrivateCustomer;");
-				while (rs_private.next()) {
-					System.out.println(
-							"Check whether customer with name: " + rs_private.getString("Name") + "exists.");
-					if (( customerEntity).getName().equals(rs_private.getString("Name"))) {
-						System.out.println("Customer already exists in database");
-						customerExists = true;
-						
-					}
+					customerExists = true;
 				}
 			}
-			// Business Customers' uniqueness is checked via their name
-			// (assumption: two companies do not have the same name)
-			else {
-				ResultSet rs_business = statement.executeQuery("SELECT * from FirmCustomer;");
-				while (rs_business.next()) {
-					System.out.println("Check whether customer with name: " + rs_business.getString("Name") + " exists.");
-					if ((customerEntity).getName().equals(rs_business.getString("Name"))) {
-						System.out.println("Customer already exists in database");
-						customerExists = true;
-					}
-				}
+		}
 
-			}*/
-
-		 catch (SQLException e) {
+		catch (SQLException e) {
 			System.err.println(e.getMessage());
 		} finally {
 			try {
@@ -178,12 +156,11 @@ public class Contract {
 			}
 		}
 
-		
 		test.setVariable("isPrivate", customerIsPrivate);
 		test.setVariable("customerExists", customerExists);
 	}
 
-	public void createNewEntry (DelegateExecution test) throws ClassNotFoundException {
+	public void createNewEntry(DelegateExecution test) throws ClassNotFoundException {
 		System.out.println("Creating new user entry");
 
 		Map<String, Object> variables = test.getVariables();
@@ -193,42 +170,39 @@ public class Contract {
 		Connection connection = null;
 		try {
 			// create a database connection
-			connection = DriverManager.getConnection("jdbc:sqlite:C:/Users/Felix Laptop/git/Workflow/Datenbank.db");
+			connection = DriverManager.getConnection("jdbc:sqlite:C:/Users/Felix Laptop/git/Workflow/Datenbank2.db");
 			Statement statement = connection.createStatement();
-			statement.setQueryTimeout(30); 
+			statement.setQueryTimeout(30);
 
 			String dbname = (customerEntity).getName();
 			int dbNumberOfClaims = 0;
-			
-			//set the information from the customerEntity
-			
 
-			//insert values into the database
-			String insertStatement = "INSERT INTO Customer(name,numberOfClaims,customer_type) VALUES('" + dbname
-					+ "','" + dbNumberOfClaims + "','" + customerIsPrivate + "')";
+			// set the information from the customerEntity
+
+			// insert values into the database
+			String insertStatement = "INSERT INTO Customer(Bvis_Id,Name,Number_Of_Claims,Private_Customer) VALUES('"
+					+ BvisId + "','" + dbname + "','" + dbNumberOfClaims + "','" + customerIsPrivate + "')";
 			PreparedStatement ps = connection.prepareStatement(insertStatement);
 			ps.executeUpdate();
 
 			// get the id of the just created customer (largest Id because of
 			// auto increment)
 			ResultSet rs_current = statement.executeQuery(
-					"SELECT Id FROM Customer WHERE Id = (SELECT MAX(Id) FROM Customer)");
-			int dbCustomerId = rs_current.getInt("Id");
-			System.out.println("zweite");
-			if (customerIsPrivate==1) {
+					"SELECT Bvis_Id FROM Customer WHERE Capitol_Id = (SELECT MAX(Capitol_Id) FROM Customer)");
+			int dbCustomerId = rs_current.getInt("Bvis_Id");
+			if (customerIsPrivate == 1) {
 				String dbbirthday = ((PrivateCustomer) customerEntity).getDateOfBirth();
-			
-			String insertStatement2 = "INSERT INTO PrivateCustomer(Id,Birthday,Name) VALUES('"
-					+ dbCustomerId + "','" + dbbirthday + "','" + dbname + "')";
-			PreparedStatement ps2 = connection.prepareStatement(insertStatement2);
-			ps2.executeUpdate();
-			}
-			else if (customerIsPrivate==0) {
-				String insertStatement3 = "INSERT INTO FirmCustomer(Id,Company_name) VALUES('"
-						+ dbCustomerId +"','" + dbname + "')";
+
+				String insertStatement2 = "INSERT INTO PrivateCustomer(Bvis_Id,Birthday,Name) VALUES('" + dbCustomerId
+						+ "','" + dbbirthday + "','" + dbname + "')";
+				PreparedStatement ps2 = connection.prepareStatement(insertStatement2);
+				ps2.executeUpdate();
+			} else if (customerIsPrivate == 0) {
+				String insertStatement3 = "INSERT INTO FirmCustomer(Bvis_Id,Company_Name) VALUES('" + dbCustomerId
+						+ "','" + dbname + "')";
 				PreparedStatement ps3 = connection.prepareStatement(insertStatement3);
 				ps3.executeUpdate();
-				
+
 			}
 
 			System.out.println("Customer entry has been created.");
@@ -244,20 +218,134 @@ public class Contract {
 			}
 		}
 
-		
-		//System.out.println("The current contractId is " + dbContractId + ".");
-}
-	public void evaluateCustomer (DelegateExecution test) {
-		
+		// System.out.println("The current contractId is " + dbContractId + ".");
 	}
-	public void calculateFees (DelegateExecution test) {
-		
+
+	public void evaluateCustomer(DelegateExecution test) throws ParseException {
+		String insuranceClass = null;
+		int age;
+		if (customerIsPrivate == 1) {
+
+			SimpleDateFormat myFormatter = new SimpleDateFormat("dd-MM-yyyy");
+			Calendar dateToday = Calendar.getInstance();
+			Calendar dateBirth = Calendar.getInstance();
+			int todayDayOfYear = dateToday.get(Calendar.DAY_OF_YEAR);
+			int birthDateDayOfYear = dateBirth.get(Calendar.DAY_OF_YEAR);
+			int todayMonth = dateToday.get(Calendar.MONTH);
+			int birthDateMonth = dateBirth.get(Calendar.MONTH);
+			int todayDayOfMonth = dateToday.get(Calendar.DAY_OF_MONTH);
+			int birthDateDayOfMonth = dateBirth.get(Calendar.DAY_OF_MONTH);
+			dateBirth.setTime(myFormatter.parse(((PrivateCustomer) customerEntity).getDateOfBirth()));
+			age = dateToday.get(Calendar.YEAR) - dateBirth.get(Calendar.YEAR);
+
+			// If birth date is greater than todays date (after 2 days adjustment of leap
+			// year) then decrement age one year
+			if ((birthDateDayOfYear - todayDayOfYear > 3) || (birthDateMonth > todayMonth)) {
+				age--;
+			}
+			// If birth date and todays date are of same month and birth day of month is
+			// greater than todays day of month then decrement age
+			else if ((birthDateMonth == todayMonth) && (birthDateDayOfMonth > todayDayOfMonth)) {
+				age--;
+			}
+
+			System.out.println("Age of the private customer is " + age);
+
+			if (age >= 18 & age < 25) {
+				insuranceClass = "A";
+			}
+
+			else if (age >= 25 & age < 65) {
+				insuranceClass = "B";
+			}
+
+			else if (age >= 65) {
+				insuranceClass = "C";
+			}
+		} else if (customerIsPrivate == 0) {
+			insuranceClass = "Business";
+		}
+		test.setVariable("insurance class", insuranceClass);
 	}
-	public void sendOffering (DelegateExecution test) {
-		
+
+	public void calculatePremium(DelegateExecution test) {
+		long price = 0;
+		Map<String, Object> variables = test.getVariables();
+		long duration =contractEntity.getDuration();
+		String insuranceClass = (String) variables.get("insurance class");
+		long model =contractEntity.getVehicle_model();
+		long numberOfVehicles=contractEntity.getNumber_of_vehicles();
+
+		if (insuranceClass.equals("A") & model == 1) {
+			price = 15;
+		}
+		if (insuranceClass.equals("A") & model == 2) {
+			price = 20;
+		}
+		if (insuranceClass.equals("A") & model == 3) {
+			price = 25;
+		}
+		if (insuranceClass.equals("A") & model == 4) {
+			price = 30;
+		}
+		if (insuranceClass.equals("A") & model == 5) {
+			price = 35;
+		}
+		if (insuranceClass.equals("B") & model == 1) {
+			price = 10;
+		}
+		if (insuranceClass.equals("B") & model == 2) {
+			price = 15;
+		}
+		if (insuranceClass.equals("B") & model == 3) {
+			price = 20;
+		}
+		if (insuranceClass.equals("B") & model == 4) {
+			price = 25;
+		}
+		if (insuranceClass.equals("B") & model == 5) {
+			price = 30;
+		}
+		if (insuranceClass.equals("C") & model == 1) {
+			price = 20;
+		}
+		if (insuranceClass.equals("C") & model == 2) {
+			price = 25;
+		}
+		if (insuranceClass.equals("C") & model == 3) {
+			price = 30;
+		}
+		if (insuranceClass.equals("C") & model == 4) {
+			price = 35;
+		}
+		if (insuranceClass.equals("C") & model == 5) {
+			price = 40;
+		} else if (insuranceClass.equals("Business"))
+			price = 20; // model does not matter for business customers
+		price = price * duration* numberOfVehicles;
+		System.out.println(" Preis für Modell "+model+" für Zeitraum von "+duration+" Tage und anzahl "+numberOfVehicles+" ist "+price);
+
+		long fullCoveragePrice = price * 3;
+		long semiCoveragePrice = price * 2;
+		System.out.println(fullCoveragePrice);
+		System.out.println(semiCoveragePrice);
+		test.setVariable("fullPrice", fullCoveragePrice);
+		test.setVariable("semiPrice", semiCoveragePrice);
+
 	}
-	
-	public void recordContract (DelegateExecution test) {
-	
-}
+
+	public void sendInsuranceOffering(DelegateExecution test) {
+		System.out.println("starte offer");
+		insuranceOffering = new InsuranceOffering();
+
+		try {
+			insuranceOffering.execute(test);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void recordContract(DelegateExecution test) {
+
+	}
 }

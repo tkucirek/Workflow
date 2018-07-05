@@ -26,8 +26,15 @@ public class ContractEntity implements Serializable {
 	protected int contractId;
 	protected double price;
 	protected Long duration;
+	protected String contractType;
 	
 	
+	public String getContractType() {
+		return contractType;
+	}
+	public void setContractType(String contractType) {
+		this.contractType = contractType;
+	}
 	public Long getId() {
 		return id;
 	}
@@ -64,7 +71,7 @@ public class ContractEntity implements Serializable {
 	public void setPrice(double price) {
 		this.price = price;
 	}
-	public double getDuration() {
+	public long getDuration() {
 		return duration;
 	}
 	public void setDuration(Long duration) {
