@@ -6,7 +6,7 @@ import org.camunda.bpm.entities.BusinessCustomer;
 import org.camunda.bpm.entities.ContractEntity;
 import org.camunda.bpm.entities.CustomerEntity;
 import org.camunda.bpm.entities.PrivateCustomer;
-import org.camunda.bpm.messages.InsuranceOffering;
+import org.camunda.bpm.messages.InsuranceOfferingOur;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -41,7 +41,7 @@ public class Contract {
 
 	private ContractEntity contractEntity;
 	private CustomerEntity customerEntity;
-	private InsuranceOffering insuranceOffering;
+	private InsuranceOfferingOur insuranceOffering;
 	private Integer customerIsPrivate;
 	private Long BvisId;
 	private String name;
@@ -57,17 +57,7 @@ public class Contract {
 			throw new RuntimeException("Cannot complete task", e);
 		}
 	}
-	public void createContract(Map<String, Object> variables, DelegateExecution delegateExecution) {
-		// Create new contract instance
-		this.setContractEntity(new ContractEntity());
-
-		// Set contract attributes
-		contractEntity.setCustomerId(customerEntity.getId());
-		contractEntity.setDuration(Long.valueOf((String) variables.get("rental_duration")));
-		contractEntity.setVehicle_model(Long.valueOf((String) variables.get("vehicle_model")));
-		contractEntity.setNumber_of_vehicles(Long.valueOf((String) variables.get("number_of_vehicles")));
-		
-	}
+	
 
 	public void persistContract(DelegateExecution test) {
 
@@ -127,6 +117,18 @@ public class Contract {
 	public ContractEntity getContract(Long contractId) {
 		// Load contract entity from database
 		return entityManager.find(ContractEntity.class, contractId);
+	}
+	
+	public void createContract(Map<String, Object> variables, DelegateExecution delegateExecution) {
+		// Create new contract instance
+		this.setContractEntity(new ContractEntity());
+		
+		// Set contract attributes
+		contractEntity.setCustomerId(customerEntity.getId());
+		contractEntity.setDuration(Long.valueOf((String) variables.get("rental_duration")));
+		contractEntity.setVehicle_model(Long.valueOf((String) variables.get("vehicle_model")));
+		contractEntity.setNumber_of_vehicles(Long.valueOf((String) variables.get("number_of_vehicles")));
+		
 	}
 
 	public void compareToDatabase(DelegateExecution test) throws ClassNotFoundException {
@@ -345,7 +347,7 @@ public class Contract {
 
 	public void sendInsuranceOffering(DelegateExecution test) {
 		System.out.println("starte offer");
-		insuranceOffering = new InsuranceOffering();
+		insuranceOffering = new InsuranceOfferingOur();
 
 		try {
 			insuranceOffering.execute(test);
