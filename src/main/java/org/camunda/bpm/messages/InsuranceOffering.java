@@ -47,6 +47,10 @@ public class InsuranceOffering implements JavaDelegate {
 	ObjectMapper mapper = new ObjectMapper();
 	String jsonInString = mapper.writeValueAsString(offerEntityFull);
 	System.out.println("Contractoffer send to the partner: " + jsonInString);
+	
+	ObjectMapper mapper2 = new ObjectMapper();
+	String jsonInString2 = mapper2.writeValueAsString(offerEntitySemi);
+	System.out.println("Contractoffer send to the partner: " + jsonInString2);
 }
 	
 }
