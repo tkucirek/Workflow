@@ -1,10 +1,16 @@
 package org.camunda.bpm.entities;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
 public class OfferEntity {
+	@Id
+	@GeneratedValue
+	protected int id;
+	
 	protected double price;
 	protected long customerId;
 	protected String description;
-	protected int offerId;
 	protected String customerName;
 	public String getCustomerName() {
 		return customerName;
@@ -13,10 +19,10 @@ public class OfferEntity {
 		this.customerName = customerName;
 	}
 	public int getOfferId() {
-		return offerId;
+		return id;
 	}
 	public void setOfferId(int offerId) {
-		this.offerId = offerId;
+		this.id = offerId;
 	}
 	public double getPrice() {
 		return price;
