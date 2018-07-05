@@ -26,8 +26,15 @@ public class ContractEntity implements Serializable {
 	protected int contractId;
 	protected double price;
 	protected Long duration;
+	protected String contractType;
 	
 	
+	public String getContractType() {
+		return contractType;
+	}
+	public void setContractType(String contractType) {
+		this.contractType = contractType;
+	}
 	public Long getId() {
 		return id;
 	}

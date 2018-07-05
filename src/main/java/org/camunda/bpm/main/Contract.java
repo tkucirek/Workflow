@@ -6,6 +6,7 @@ import org.camunda.bpm.entities.BusinessCustomer;
 import org.camunda.bpm.entities.ContractEntity;
 import org.camunda.bpm.entities.CustomerEntity;
 import org.camunda.bpm.entities.PrivateCustomer;
+import org.camunda.bpm.messages.InsuranceOffering;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -40,6 +41,7 @@ public class Contract {
 
 	private ContractEntity contractEntity;
 	private CustomerEntity customerEntity;
+	private InsuranceOffering insuranceOffering;
 	private Integer customerIsPrivate;
 	private Long BvisId;
 
@@ -327,11 +329,20 @@ public class Contract {
 		long semiCoveragePrice = price * 2;
 		System.out.println(fullCoveragePrice);
 		System.out.println(semiCoveragePrice);
+		test.setVariable("fullPrice", fullCoveragePrice);
+		test.setVariable("semiPrice", semiCoveragePrice);
 
 	}
 
-	public void sendOffering(DelegateExecution test) {
+	public void sendInsuranceOffering(DelegateExecution test) {
+		System.out.println("starte offer");
+		insuranceOffering = new InsuranceOffering();
 
+		try {
+			insuranceOffering.execute(test);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void recordContract(DelegateExecution test) {
