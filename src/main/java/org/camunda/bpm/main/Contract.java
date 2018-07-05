@@ -44,6 +44,7 @@ public class Contract {
 	private InsuranceOffering insuranceOffering;
 	private Integer customerIsPrivate;
 	private Long BvisId;
+	private String name;
 
 	public void mergeOrderAndCompleteTask(ContractEntity contractEntity) {
 		// Merge detached order entity with current persisted state
@@ -56,11 +57,22 @@ public class Contract {
 			throw new RuntimeException("Cannot complete task", e);
 		}
 	}
+	public void createContract(Map<String, Object> variables, DelegateExecution delegateExecution) {
+		// Create new contract instance
+		this.setContractEntity(new ContractEntity());
+
+		// Set contract attributes
+		contractEntity.setCustomerId(customerEntity.getId());
+		contractEntity.setDuration(Long.valueOf((String) variables.get("rental_duration")));
+		contractEntity.setVehicle_model(Long.valueOf((String) variables.get("vehicle_model")));
+		contractEntity.setNumber_of_vehicles(Long.valueOf((String) variables.get("number_of_vehicles")));
+		
+	}
 
 	public void persistContract(DelegateExecution test) {
 
 		Map<String, Object> variables = test.getVariables();// Get all process variables
-
+		name=(String)variables.get("name");
 		// Create customer and set order attributes for customer
 		if (variables.get("Customer_type").equals("private")) {
 			customerIsPrivate = 1;
@@ -74,12 +86,7 @@ public class Contract {
 		}
 		BvisId = Long.valueOf((String) variables.get("bvisProcessId"));
 		// Set order attributes for contract
-		this.setContractEntity(new ContractEntity());
-		contractEntity.setCustomerId(customerEntity.getId());
-		contractEntity.setDuration(Long.valueOf((String) variables.get("rental_duration")));
-		contractEntity.setVehicle_model(Long.valueOf((String) variables.get("vehicle_model")));
-		contractEntity.setNumber_of_vehicles(Long.valueOf((String) variables.get("number_of_vehicles")));
-
+		createContract(variables,test);
 		// Persist order instance and flush. After the flush the
 		// id of the order instance is set.
 		entityManager.persist(customerEntity);
@@ -97,6 +104,8 @@ public class Contract {
 		test.setVariable("BvisId", BvisId);
 		test.setVariable("contractEntity", contractEntity);
 		test.setVariable("customerEntity", customerEntity);
+		test.setVariable("name", name);
+		
 	}
 
 	public void setCustomerEntity(CustomerEntity customerEntity) {
