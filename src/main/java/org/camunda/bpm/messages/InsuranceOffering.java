@@ -1,68 +1,56 @@
-package com.group5.BVIS.RestModels;
+package org.camunda.bpm.messages;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.camunda.bpm.engine.delegate.DelegateExecution;
+import org.camunda.bpm.engine.delegate.JavaDelegate;
+import org.camunda.bpm.entities.ContractEntity;
+import org.camunda.bpm.entities.OfferEntity;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class InsuranceOffering implements java.io.Serializable {
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+public class InsuranceOffering implements JavaDelegate {
 	
-	private static final long serialVersionUID = 42L;
+	public void execute(DelegateExecution test) throws Exception {
+	System.out.println("hole bvis id");
+	long bvisId =  (long) test.getVariable("BvisId");
+	System.out.println("hole contract");
+	long fullPrice=(long) test.getVariable("fullPrice");
+	long semiPrice=(long) test.getVariable("semiPrice");
+	//ContractEntity contract = (ContractEntity) test.getVariable("contractEntity");
+	System.out.println("hole name");
+	String customerName=((String) test.getVariable("name"));
+	//String processId = test.getProcessInstanceId();
+
+	// Generate ContractOfferEntity to send to the partner
+	System.out.println("erstelle neue entitiy");
+	OfferEntity offerEntityFull = new OfferEntity();
+	offerEntityFull.setCustomerId(bvisId);
+	offerEntityFull.setPrice(fullPrice);
+	offerEntityFull.setCustomerName(customerName);
+	offerEntityFull.setDescription("Full coverage");
 	
-	public InsuranceOffering(Long offer_id, String name, float price, String description) {
-		super();
-		this.offer_id = offer_id;
-		this.name = name;
-		this.price = price;
-		Description = description;
-	}
+	OfferEntity offerEntitySemi = new OfferEntity();
+	offerEntitySemi.setCustomerId(bvisId);
+	offerEntitySemi.setPrice(semiPrice);
+	offerEntitySemi.setCustomerName(customerName);
+	offerEntitySemi.setDescription("Semi coverage");
+
+	// Give output to the user
+	System.out.println("Offertid: " + offerEntityFull.getOfferId());
+	System.out.println("Price: " + offerEntityFull.getPrice());
+	System.out.println("BvisId: " + offerEntityFull.getCustomerId());
+	System.out.println("Description: " + offerEntityFull.getDescription());
+	System.out.println("name: " + offerEntityFull.getCustomerName());
+	System.out.println(customerName);
+
+	// Convert the contractOfferEntity to a string representing a json
+	// object
+	ObjectMapper mapper = new ObjectMapper();
+	String jsonInString = mapper.writeValueAsString(offerEntityFull);
+	System.out.println("Contractoffer send to the partner: " + jsonInString);
 	
-	public InsuranceOffering() {
-		super();
-	}
-
-	//validation missing!!!
-	private Long offer_id;
+	ObjectMapper mapper2 = new ObjectMapper();
+	String jsonInString2 = mapper2.writeValueAsString(offerEntitySemi);
+	System.out.println("Contractoffer send to the partner: " + jsonInString2);
+}
 	
-	private String name;
-
-	private float price;	
-	
-	private String Description;
-
-	public Long getOffer_id() {
-		return offer_id;
-	}
-
-	public void setOffer_id(Long offer_id) {
-		this.offer_id = offer_id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public float getPrice() {
-		return price;
-	}
-
-	public void setPrice(float price) {
-		this.price = price;
-	}
-
-	public String getDescription() {
-		return Description;
-	}
-
-	public void setDescription(String description) {
-		Description = description;
-	}
-
-	@Override
-	public String toString() {
-		return "InsuranceOffering [offer_id=" + offer_id + ", name=" + name + ", price=" + price + ", Description="
-				+ Description + "]";
-	}
 }

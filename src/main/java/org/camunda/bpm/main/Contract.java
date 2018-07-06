@@ -6,7 +6,7 @@ import org.camunda.bpm.entities.BusinessCustomer;
 import org.camunda.bpm.entities.ContractEntity;
 import org.camunda.bpm.entities.CustomerEntity;
 import org.camunda.bpm.entities.PrivateCustomer;
-import org.camunda.bpm.messages.InsuranceOfferingOur;
+import org.camunda.bpm.messages.InsuranceOffering;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -41,7 +41,7 @@ public class Contract {
 
 	private ContractEntity contractEntity;
 	private CustomerEntity customerEntity;
-	private InsuranceOfferingOur insuranceOffering;
+	private InsuranceOffering insuranceOffering;
 	private Integer customerIsPrivate;
 	private Long BvisId;
 	private String name;
@@ -347,7 +347,7 @@ public class Contract {
 
 	public void sendInsuranceOffering(DelegateExecution test) {
 		System.out.println("starte offer");
-		insuranceOffering = new InsuranceOfferingOur();
+		insuranceOffering = new InsuranceOffering();
 
 		try {
 			insuranceOffering.execute(test);
