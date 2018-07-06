@@ -122,7 +122,11 @@ public class Contract {
 	public void createContract(Map<String, Object> variables, DelegateExecution test) {
 		// Create new contract instance
 		this.setContractEntity(new ContractEntity());
+<<<<<<< HEAD
 
+=======
+		
+>>>>>>> refs/heads/master
 		// Set contract attributes
 		contractEntity.setCustomerId(customerEntity.getId());
 		contractEntity.setDuration(Long.valueOf((String) variables.get("rental_duration")));
