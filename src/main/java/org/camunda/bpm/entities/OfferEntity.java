@@ -14,13 +14,16 @@ public class OfferEntity {
 	protected double price;
 	protected String customerId;
 	protected String description;
-	protected String customerName;
+	/*protected String customerName;
+	
+	
 	public String getCustomerName() {
 		return customerName;
 	}
 	public void setCustomerName(String customerName) {
 		this.customerName = customerName;
 	}
+	*/
 	public int getOfferId() {
 		return id;
 	}

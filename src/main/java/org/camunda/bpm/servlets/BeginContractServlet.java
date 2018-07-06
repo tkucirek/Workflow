@@ -28,6 +28,7 @@ public class BeginContractServlet extends HttpServlet {
 		ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
 		RuntimeService runtimeService = processEngine.getRuntimeService();
 		PrintWriter out = response.getWriter();
+		
 
 		Map<String, Object> map = new HashMap<String, Object>();
 		
@@ -68,7 +69,7 @@ public class BeginContractServlet extends HttpServlet {
 		
 		System.out.println(map.get(name));
 		*/
-		out.println("hallo ihr geilen ficker");
+		
 		
 		
 		ProcessInstance processInstance;
@@ -85,9 +86,16 @@ public class BeginContractServlet extends HttpServlet {
 		}*/
 		
 		String offerhalf = (String) runtimeService.getVariable(prozessid, "offerhalf");
-		out.println("DIE HALBE OFFER IST: " + offerhalf);
-		System.out.println("felix halbe offer ist: " + offerhalf);
-		out.println("hallo ihr geilen ficker");
+		String offerfull = (String) runtimeService.getVariable(prozessid, "offerfull");
+		JSONObject beideoffer = new JSONObject();
+		beideoffer.put("HalbKasko", offerhalf);
+		beideoffer.put("VollKasko", offerfull);
+		
+		response.setContentType("application/json");
+		out.print(beideoffer);
+		
+		
+		
 		out.close();
 	}
 
