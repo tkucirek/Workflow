@@ -22,6 +22,8 @@ import org.camunda.bpm.messages.InsuranceOffering;
 
 public class BeginContractServlet extends HttpServlet {
 	
+	String neueprozessid;
+	
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
@@ -76,7 +78,11 @@ public class BeginContractServlet extends HttpServlet {
 		
 
 		processInstance = runtimeService.startProcessInstanceByMessage("instantiationMessageContract", map);
-		String prozessid = processInstance.getId();	
+		String prozessid = processInstance.getId();
+		runtimeService.setVariable(prozessid, "prozessid", prozessid);
+		neueprozessid = prozessid;
+		
+		
 		
 		/*try {
 			wait(20);
@@ -87,6 +93,7 @@ public class BeginContractServlet extends HttpServlet {
 		
 		String offerhalf = (String) runtimeService.getVariable(prozessid, "offerhalf");
 		String offerfull = (String) runtimeService.getVariable(prozessid, "offerfull");
+		
 		JSONObject beideoffer = new JSONObject();
 		beideoffer.put("HalbKasko", offerhalf);
 		beideoffer.put("VollKasko", offerfull);
@@ -97,6 +104,10 @@ public class BeginContractServlet extends HttpServlet {
 		
 		
 		out.close();
+	}
+	
+	public String getprozessid() {
+		return neueprozessid;
 	}
 
 }
