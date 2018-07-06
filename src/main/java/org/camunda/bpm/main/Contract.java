@@ -119,7 +119,7 @@ public class Contract {
 		return entityManager.find(ContractEntity.class, contractId);
 	}
 	
-	public void createContract(Map<String, Object> variables, DelegateExecution delegateExecution) {
+	public void createContract(Map<String, Object> variables, DelegateExecution test) {
 		// Create new contract instance
 		this.setContractEntity(new ContractEntity());
 		
