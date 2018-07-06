@@ -11,4 +11,16 @@
     <servlet-name>BeginContractServlet</servlet-name>
     <url-pattern>/BeginContractServlet</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <description></description>
+    <display-name>ConfirmationServlet</display-name>
+    <servlet-name>ConfirmationServlet</servlet-name>
+    <servlet-class>org.camunda.bpm.servlets.ConfirmationServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ConfirmationServlet</servlet-name>
+    <url-pattern>/ConfirmationServlet</url-pattern>
+  </servlet-mapping>
+  
 </web-app>
