@@ -18,6 +18,7 @@ import org.camunda.bpm.engine.ProcessEngines;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.impl.util.json.JSONObject;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
+import org.camunda.bpm.messages.InsuranceOffering;
 
 public class BeginContractServlet extends HttpServlet {
 	
@@ -67,12 +68,27 @@ public class BeginContractServlet extends HttpServlet {
 		
 		System.out.println(map.get(name));
 		*/
+		out.println("hallo ihr geilen ficker");
 		
-		out.close();
+		
 		ProcessInstance processInstance;
 		
 
 		processInstance = runtimeService.startProcessInstanceByMessage("instantiationMessageContract", map);
+		String prozessid = processInstance.getId();	
+		
+		/*try {
+			wait(20);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
+		
+		String offerhalf = (String) runtimeService.getVariable(prozessid, "offerhalf");
+		out.println("DIE HALBE OFFER IST: " + offerhalf);
+		System.out.println("felix halbe offer ist: " + offerhalf);
+		out.println("hallo ihr geilen ficker");
+		out.close();
 	}
 
 }

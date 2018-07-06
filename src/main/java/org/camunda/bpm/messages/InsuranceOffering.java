@@ -9,6 +9,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class InsuranceOffering implements JavaDelegate {
 	
+	private String jsonInString;
+	private String jsonInString2;
+	
 	public void execute(DelegateExecution test) throws Exception {
 	System.out.println("hole bvis id");
 	String bvisId =  (String) test.getVariable("BvisId");
@@ -23,12 +26,14 @@ public class InsuranceOffering implements JavaDelegate {
 	// Generate ContractOfferEntity to send to the partner
 	System.out.println("erstelle neue entitiy");
 	OfferEntity offerEntityFull = new OfferEntity();
+	offerEntityFull.setOfferId(2);
 	offerEntityFull.setCustomerId(bvisId);
 	offerEntityFull.setPrice(fullPrice);
 	offerEntityFull.setCustomerName(customerName);
 	offerEntityFull.setDescription("Full coverage");
 	
 	OfferEntity offerEntitySemi = new OfferEntity();
+	offerEntitySemi.setOfferId(1);
 	offerEntitySemi.setCustomerId(bvisId);
 	offerEntitySemi.setPrice(semiPrice);
 	offerEntitySemi.setCustomerName(customerName);
@@ -45,12 +50,26 @@ public class InsuranceOffering implements JavaDelegate {
 	// Convert the contractOfferEntity to a string representing a json
 	// object
 	ObjectMapper mapper = new ObjectMapper();
-	String jsonInString = mapper.writeValueAsString(offerEntityFull);
+	jsonInString = mapper.writeValueAsString(offerEntityFull);
+	
 	System.out.println("Contractoffer send to the partner: " + jsonInString);
 	
+	
+	
 	ObjectMapper mapper2 = new ObjectMapper();
-	String jsonInString2 = mapper2.writeValueAsString(offerEntitySemi);
+	jsonInString2 = mapper2.writeValueAsString(offerEntitySemi);
 	System.out.println("Contractoffer send to the partner: " + jsonInString2);
+	
+	test.setVariable("offerhalf", jsonInString);
+	test.setVariable("offerfull", jsonInString2);
 }
+	
+	public String getJsonstring1() {
+		return jsonInString;
+	}
+	
+	public String getJsonstring2() {
+		return jsonInString;
+	}
 	
 }
