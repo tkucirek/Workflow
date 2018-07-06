@@ -11,7 +11,7 @@ public class InsuranceOffering implements JavaDelegate {
 	
 	public void execute(DelegateExecution test) throws Exception {
 	System.out.println("hole bvis id");
-	long bvisId =  (long) test.getVariable("BvisId");
+	String bvisId =  (String) test.getVariable("BvisId");
 	System.out.println("hole contract");
 	long fullPrice=(long) test.getVariable("fullPrice");
 	long semiPrice=(long) test.getVariable("semiPrice");

@@ -12,7 +12,7 @@ public class OfferEntity {
 	protected int id;
 	
 	protected double price;
-	protected long customerId;
+	protected String customerId;
 	protected String description;
 	protected String customerName;
 	public String getCustomerName() {
@@ -33,11 +33,11 @@ public class OfferEntity {
 	public void setPrice(double price) {
 		this.price = price;
 	}
-	public long getCustomerId() {
+	public String getCustomerId() {
 		return customerId;
 	}
-	public void setCustomerId(long customerId) {
-		this.customerId = customerId;
+	public void setCustomerId(String bvisId) {
+		this.customerId = bvisId;
 	}
 	public String getDescription() {
 		return description;

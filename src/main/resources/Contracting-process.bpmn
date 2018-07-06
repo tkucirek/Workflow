@@ -6,7 +6,6 @@
   <bpmn:process id="contracting" isExecutable="true">
     <bpmn:laneSet id="LaneSet_0xbpb5n">
       <bpmn:lane id="Lane_18apn5c" name="Automated">
-        <bpmn:flowNodeRef>customer_requirement_recieved</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Task_1yqxsinCompare_against_internal_customer_data</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>customer_in_database_closing</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>customer_in_database</bpmn:flowNodeRef>
@@ -20,6 +19,7 @@
         <bpmn:flowNodeRef>send_invoice</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Task_0fntybt</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>create_and_send_insurance_offering</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>customer_requirement_recieved</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="Lane_10e3s8u" name="Manual ">
         <bpmn:flowNodeRef>terminate_contract</bpmn:flowNodeRef>
@@ -27,9 +27,6 @@
         <bpmn:flowNodeRef>contract_failed</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
-    <bpmn:startEvent id="customer_requirement_recieved" name="Customer requirements recieved" camunda:formKey="app:contract.jsf">
-      <bpmn:outgoing>SequenceFlow_0lqgarw</bpmn:outgoing>
-    </bpmn:startEvent>
     <bpmn:dataStoreReference id="customer_database_read" name="Customer database" />
     <bpmn:serviceTask id="Task_1yqxsinCompare_against_internal_customer_data" name="Compare against internal customer data" camunda:expression="${contract.compareToDatabase(execution)}">
       <bpmn:incoming>SequenceFlow_1g2qrkp</bpmn:incoming>
@@ -130,18 +127,17 @@
       <bpmn:incoming>SequenceFlow_0v4k1mm</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1te7xei</bpmn:outgoing>
     </bpmn:sendTask>
+    <bpmn:startEvent id="customer_requirement_recieved" name="Customer requirements recieved" camunda:formKey="app:contract.jsf">
+      <bpmn:outgoing>SequenceFlow_0lqgarw</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_1up73u7" />
+    </bpmn:startEvent>
   </bpmn:process>
   <bpmn:message id="Message_1n6dn6g" name="Message_0nkug2r" />
+  <bpmn:message id="Message_1up73u7" name="instantiationMessageContract" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0eg8kno">
       <bpmndi:BPMNShape id="Participant_0pygkfv_di" bpmnElement="contracting_process">
         <dc:Bounds x="79" y="-313" width="2344" height="845" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="customer_requirement_recieved">
-        <dc:Bounds x="173" y="102" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="159" y="145" width="65" height="40" />
-        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="DataStoreReference_197cnoc_di" bpmnElement="customer_database_read">
         <dc:Bounds x="434" y="232" width="50" height="50" />
@@ -300,6 +296,12 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="SendTask_01tj0ql_di" bpmnElement="create_and_send_insurance_offering">
         <dc:Bounds x="1557" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_0xe2a1j_di" bpmnElement="customer_requirement_recieved">
+        <dc:Bounds x="173" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="159" y="145" width="65" height="40" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

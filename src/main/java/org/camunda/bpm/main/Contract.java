@@ -43,7 +43,7 @@ public class Contract {
 	private CustomerEntity customerEntity;
 	private InsuranceOffering insuranceOffering;
 	private Integer customerIsPrivate;
-	private Long BvisId;
+	private String BvisId;
 	private String name;
 
 	public void mergeOrderAndCompleteTask(ContractEntity contractEntity) {
@@ -74,7 +74,7 @@ public class Contract {
 			this.setCustomerEntity(new BusinessCustomer());
 			((BusinessCustomer) customerEntity).setName((String) variables.get("name"));
 		}
-		BvisId = Long.valueOf((String) variables.get("bvisProcessId"));
+		BvisId = (String) variables.get("BvisId");
 		// Set order attributes for contract
 		createContract(variables,test);
 		// Persist order instance and flush. After the flush the
@@ -142,7 +142,7 @@ public class Contract {
 		Connection connection = null;
 		try {
 			// create a database connection
-			connection = DriverManager.getConnection("jdbc:sqlite:C:/Users/Felix Laptop/git/Workflow/Datenbank2.db");
+			connection = DriverManager.getConnection(Customize.databasepath);
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30);
 
@@ -181,7 +181,7 @@ public class Contract {
 		Connection connection = null;
 		try {
 			// create a database connection
-			connection = DriverManager.getConnection("jdbc:sqlite:C:/Users/Felix Laptop/git/Workflow/Datenbank2.db");
+			connection = DriverManager.getConnection(Customize.databasepath);
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30);
 
