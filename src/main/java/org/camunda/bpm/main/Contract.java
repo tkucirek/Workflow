@@ -357,6 +357,9 @@ public class Contract {
 	}
 
 	public void recordContract(DelegateExecution test) throws ClassNotFoundException {
+		
+		Map<String, Object> variables = test.getVariables();
+		System.out.println(variables);
 		/*System.out.println("Creating new contract entry");
 
 		Map<String, Object> variables = test.getVariables();

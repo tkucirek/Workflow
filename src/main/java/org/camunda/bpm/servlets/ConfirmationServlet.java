@@ -34,7 +34,7 @@ public class ConfirmationServlet extends HttpServlet {
 		RuntimeService runtimeService = processEngine.getRuntimeService();
 		PrintWriter out = response.getWriter();
 		
-		int finalPrice = 0;
+		long finalPrice = 0;
 		
 
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -47,8 +47,8 @@ public class ConfirmationServlet extends HttpServlet {
 		String customer_id = String.valueOf(json.getLong("customer_id")) ;
 		String offer_id = String.valueOf(json.getLong("offer_id"));
 		
-		map.put("customer_id", customer_id);
-		map.put("offer_id", offer_id);
+		//map.put("customer_id", customer_id);
+		//map.put("offer_id", offer_id);
 		
 		try {
 			Class.forName("org.sqlite.JDBC");
@@ -81,35 +81,30 @@ public class ConfirmationServlet extends HttpServlet {
 			}
 		}
 		
+		if(json.getLong("offer_id")== 1) {
+			finalPrice = (long)runtimeService.getVariable(process_Id, "fullPrice");
+			offertype = "Vollkasko";
+			
+		}else if (json.getLong("offer_id") == 2) {
+			finalPrice = (long) runtimeService.getVariable(process_Id, "semiPrice");
+			offertype = "Halbkasko";
+		}
+		map.put("customer_id", customer_id);
+		map.put("offer_id", offer_id);
+		map.put("finalPrice", finalPrice);
+		map.put("finalOfferType", offertype);
 		
-		
-		runtimeService.createMessageCorrelation("receiveContractConfirmation").processInstanceId(process_Id).setVariable("lolotest", 5)
+		runtimeService.createMessageCorrelation("contractConfirmed").processInstanceId(process_Id).setVariables(map)
 		.correlateWithResult();
-		/*ProcessInstance processinstance;
-		String prozessid;
-		runtimeService.
-		MessageCorrelationResult result = runtimeService
-		        .createMessageCorrelation("contractConfirmed").setVariable("customer", "customer").correlateWithResult();
-		         //trigger instance where customer matche*/
+
 		
 		
 	
 		
 		
 		
-		/*if(json.getLong("offer_id")== 1) {
-			finalPrice = (int) runtimeService.getVariable(prozessid, "offerfull");
-			offertype = "Vollkasko";
-			
-		}else if (json.getLong("offer_id") == 2) {
-			finalPrice = (int) runtimeService.getVariable(prozessid, "offerhalf");
-			offertype = "Halbkasko";
-		}
+	
 		
-		runtimeService.setVariable(prozessid, "finalPrice", finalPrice);
-		
-		runtimeService.setVariable(prozessid, "offertype" , offertype);
-		*/
 		
 	
 	}
