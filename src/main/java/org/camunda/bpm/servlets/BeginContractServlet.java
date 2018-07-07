@@ -2,11 +2,17 @@ package org.camunda.bpm.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
+
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +24,7 @@ import org.camunda.bpm.engine.ProcessEngines;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.impl.util.json.JSONObject;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
+import org.camunda.bpm.main.Customize;
 import org.camunda.bpm.messages.InsuranceOffering;
 
 public class BeginContractServlet extends HttpServlet {
@@ -76,13 +83,44 @@ public class BeginContractServlet extends HttpServlet {
 		
 		ProcessInstance processInstance;
 		
-
 		processInstance = runtimeService.startProcessInstanceByMessage("instantiationMessageContract", map);
 		String prozessid = processInstance.getId();
 		runtimeService.setVariable(prozessid, "prozessid", prozessid);
 		neueprozessid = prozessid;
 		
-		
+		try {
+			Class.forName("org.sqlite.JDBC");
+		} catch (ClassNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		Connection connection = null;
+		try {
+			// create a database connection
+			connection = DriverManager.getConnection(Customize.databasepath);
+			Statement statement = connection.createStatement();
+			statement.setQueryTimeout(30);
+
+			String insertStatement = "INSERT INTO Instance(Bvis_Id,Process_Id) VALUES('"
+					+ customer_id + "','" + prozessid + "')";
+			PreparedStatement ps = connection.prepareStatement(insertStatement);
+			ps.executeUpdate();
+
+				
+			
+		}
+
+		catch (SQLException e) {
+			System.err.println(e.getMessage());
+		} finally {
+			try {
+				if (connection != null)
+					connection.close();
+			} catch (SQLException e) {
+				System.err.println(e);
+			}
+		}
 		
 		/*try {
 			wait(20);

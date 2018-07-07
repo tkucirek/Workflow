@@ -70,7 +70,7 @@
       <bpmn:messageEventDefinition messageRef="Message_1n6dn6g" />
     </bpmn:intermediateCatchEvent>
     <bpmn:dataStoreReference id="contract_database" name="Contract database" />
-    <bpmn:serviceTask id="record_contract" name="Record contract" camunda:expression="${true}">
+    <bpmn:serviceTask id="record_contract" name="Record contract" camunda:expression="${contract.recordContract(execution)}">
       <bpmn:incoming>SequenceFlow_1cmrjy0</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1dp4del</bpmn:outgoing>
       <bpmn:dataOutputAssociation id="DataOutputAssociation_17qo2qx">

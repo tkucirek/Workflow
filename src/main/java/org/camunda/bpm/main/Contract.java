@@ -356,7 +356,68 @@ public class Contract {
 		}
 	}
 
-	public void recordContract(DelegateExecution test) {
+	public void recordContract(DelegateExecution test) throws ClassNotFoundException {
+		
+		Map<String, Object> variables = test.getVariables();
+		System.out.println(variables);
+		/*System.out.println("Creating new contract entry");
 
-	}
-}
+		Map<String, Object> variables = test.getVariables();
+		long finalPrice=Long.valueOf((String) test.getVariable("finalPrice"));
+		long duration =contractEntity.getDuration();
+		long model;
+		long numberOfVehicle;
+
+		Class.forName("org.sqlite.JDBC");
+		Connection connection = null;
+		try {
+			// create a database connection
+			connection = DriverManager.getConnection(Customize.databasepath);
+			Statement statement = connection.createStatement();
+			statement.setQueryTimeout(30);
+
+			String dbname = (customerEntity).getName();
+			int dbNumberOfClaims = 0;
+
+			// set the information from the customerEntity
+
+			// insert values into the database
+			String insertStatement = "INSERT INTO Contract(Bvis_Id,Price,Coverage,Duration_In_Days,Model,Number_Of_Vehicles) VALUES('"
+					+ BvisId + "','" + finalPrice + "','" + dbNumberOfClaims + "','" + duration + "','" + model + "','" + numberOfVehicle+"')";
+			PreparedStatement ps = connection.prepareStatement(insertStatement);
+			ps.executeUpdate();
+
+			// get the id of the just created customer (largest Id because of
+			// auto increment)
+			ResultSet rs_current = statement.executeQuery(
+					"SELECT Bvis_Id FROM Customer WHERE Capitol_Id = (SELECT MAX(Capitol_Id) FROM Customer)");
+			int dbCustomerId = rs_current.getInt("Bvis_Id");
+			if (customerIsPrivate == 1) {
+				String dbbirthday = ((PrivateCustomer) customerEntity).getDateOfBirth();
+
+				String insertStatement2 = "INSERT INTO PrivateCustomer(Bvis_Id,Birthday,Name) VALUES('" + dbCustomerId
+						+ "','" + dbbirthday + "','" + dbname + "')";
+				PreparedStatement ps2 = connection.prepareStatement(insertStatement2);
+				ps2.executeUpdate();
+			} else if (customerIsPrivate == 0) {
+				String insertStatement3 = "INSERT INTO FirmCustomer(Bvis_Id,Company_Name) VALUES('" + dbCustomerId
+						+ "','" + dbname + "')";
+				PreparedStatement ps3 = connection.prepareStatement(insertStatement3);
+				ps3.executeUpdate();
+
+			}
+
+			System.out.println("Customer entry has been created.");
+
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+		} finally {
+			try {
+				if (connection != null)
+					connection.close();
+			} catch (SQLException e) {
+				System.err.println(e);
+			}
+		}
+	}*/
+}}
