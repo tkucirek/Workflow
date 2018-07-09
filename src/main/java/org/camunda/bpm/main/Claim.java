@@ -113,13 +113,13 @@ public class Claim {
 			long dbDamageClassification = claimEntity.getDamageClassification();
 			long dbCustomerId = claimEntity.getCustomerId();
 			
-			ResultSet resultmodel = statement.executeQuery("SELECT Model FROM Contract WHERE Bvis_Id = " 
-					+ claimEntity.getCustomerId());
+			ResultSet resultmodel = statement.executeQuery("SELECT Model FROM Contract WHERE Bvis_Id = '" 
+					+ claimEntity.getCustomerId() + "'");
 			int model1 = resultmodel.getInt(1);
 			System.out.println(resultmodel.getInt(1));
 			System.out.println("mode l" + model1);
-			ResultSet resultnumber = statement.executeQuery("SELECT Number_Of_Vehicles FROM Contract WHERE Bvis_Id = " 
-					+ claimEntity.getCustomerId());
+			ResultSet resultnumber = statement.executeQuery("SELECT Number_Of_Vehicles FROM Contract WHERE Bvis_Id = '" 
+					+ claimEntity.getCustomerId() + "'");
 			
 			int number1 = resultnumber.getInt(1);
 			
@@ -169,9 +169,11 @@ public class Claim {
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30);
 
-			ResultSet result = statement.executeQuery("SELECT Coverage from Contract WHERE Bvis_Id=" + customer_id );
+			ResultSet result = statement.executeQuery("SELECT Coverage from Contract WHERE Bvis_Id= '" + customer_id + "'" );
 			
 			String coverage = String.valueOf(result);
+			
+			System.out.println("Coverage " + coverage);
 			
 			test.setVariable("coverage", coverage);
 			
@@ -205,9 +207,12 @@ public class Claim {
 			damage_Assessment = Long.valueOf((String) test.getVariable("damage_Amount"));
 		}
 		
-		long deductible_Amount = Long.valueOf((String) test.getVariable("damage_Amount")) - damage_Assessment;
+		System.out.println("Damage Assessment: " + damage_Assessment);
+		
+		long deductible_Amount = (long) test.getVariable("damage_Amount") - damage_Assessment;
 		
 		test.setVariable("deductible_Amount", deductible_Amount);
+		System.out.println("Deductible Amount " + deductible_Amount);
 		
 	}
 	public void SendDamageAssessment (DelegateExecution test) {
