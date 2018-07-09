@@ -21,7 +21,7 @@
     <bpmn:sequenceFlow id="SequenceFlow_15wjx9m" sourceRef="check_damage" targetRef="crosscheck_with_contract" />
     <bpmn:sequenceFlow id="SequenceFlow_0fsvjve" sourceRef="crosscheck_with_contract" targetRef="determine_deductible_amount" />
     <bpmn:sequenceFlow id="SequenceFlow_04z86ur" sourceRef="determine_deductible_amount" targetRef="Task_11pm7ou" />
-    <bpmn:serviceTask id="crosscheck_with_contract" name="Crosscheck with contract" camunda:expression="${true}">
+    <bpmn:serviceTask id="crosscheck_with_contract" name="Crosscheck with contract" camunda:expression="${claim.CrossCheckWithContract(execution)}">
       <bpmn:incoming>SequenceFlow_15wjx9m</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0fsvjve</bpmn:outgoing>
       <bpmn:property id="Property_03jhn5h" name="__targetRef_placeholder" />
@@ -51,7 +51,7 @@
     <bpmn:sequenceFlow id="SequenceFlow_1fa1ohu" sourceRef="adjust_customer_damage_category" targetRef="claim_finished_sucesfully" />
     <bpmn:sequenceFlow id="SequenceFlow_0p59lh1" sourceRef="Task_11pm7ou" targetRef="send_payment" />
     <bpmn:sequenceFlow id="SequenceFlow_0fwdlem" sourceRef="Task_0mnz1if" targetRef="check_damage" />
-    <bpmn:serviceTask id="determine_deductible_amount" name="Determine deductible amount" camunda:expression="${true}">
+    <bpmn:serviceTask id="determine_deductible_amount" name="Determine deductible amount" camunda:expression="${claim.DetermineDeductibleAmount(execution)}">
       <bpmn:incoming>SequenceFlow_0fsvjve</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_04z86ur</bpmn:outgoing>
     </bpmn:serviceTask>
