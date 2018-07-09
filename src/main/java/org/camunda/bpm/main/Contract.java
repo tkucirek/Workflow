@@ -135,7 +135,7 @@ public class Contract {
 		// Set contract attributes
 		contractEntity.setCustomerId(BvisId);
 		contractEntity.setCustomerName(name);
-		contractEntity.setDuration(Long.valueOf((String) variables.get("rental_duration")));
+		contractEntity.setDuration(Long.valueOf((String) variables.get("rental_duration"))*0.0000000115741);
 		contractEntity.setVehicle_model(Long.valueOf((String) variables.get("vehicle_model")));
 		contractEntity.setNumber_of_vehicles(Long.valueOf((String) variables.get("number_of_vehicles")));
 		
@@ -292,7 +292,7 @@ public class Contract {
 	public void calculatePremium(DelegateExecution test) {
 		long price = 0;
 		Map<String, Object> variables = test.getVariables();
-		long duration =contractEntity.getDuration();
+		double duration =contractEntity.getDuration();
 		String insuranceClass = (String) variables.get("insurance class");
 		long model =contractEntity.getVehicle_model();
 		long numberOfVehicles=contractEntity.getNumber_of_vehicles();
@@ -343,7 +343,7 @@ public class Contract {
 			price = 40;
 		} else if (insuranceClass.equals("Business"))
 			price = 20; // model does not matter for business customers
-		price = price * duration* numberOfVehicles;
+		price = price;
 		System.out.println(" Preis für Modell "+model+" für Zeitraum von "+duration+" Tage und anzahl "+numberOfVehicles+" ist "+price);
 
 		long fullCoveragePrice = price * 3;
@@ -374,7 +374,7 @@ public class Contract {
 
 		long finalPrice=(long)test.getVariable("finalPrice");
 		String finalOfferType=(String) test.getVariable("finalOfferType");
-		long duration =contractEntity.getDuration();
+		double duration =contractEntity.getDuration();
 		long model=contractEntity.getVehicle_model();
 		long numberOfVehicle =contractEntity.getNumber_of_vehicles();
 		//contractEntity.setContractType(finalOfferType);

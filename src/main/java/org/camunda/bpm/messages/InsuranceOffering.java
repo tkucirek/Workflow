@@ -28,14 +28,14 @@ public class InsuranceOffering implements JavaDelegate {
 	System.out.println("erstelle neue entitiy");
 	OfferEntity offerEntityFull = new OfferEntity();
 	offerEntityFull.setOffer_Id(2);
-	offerEntityFull.setCustomerId(bvisId);
+	//offerEntityFull.setCustomerId(bvisId);
 	offerEntityFull.setPrice(fullPrice);
 	offerEntityFull.setName("Vollkasko");
 	offerEntityFull.setDescription("Full coverage: All damages get compensated.");
 	
 	OfferEntity offerEntitySemi = new OfferEntity();
 	offerEntitySemi.setOffer_Id(1);
-	offerEntitySemi.setCustomerId(bvisId);
+	//offerEntitySemi.setCustomerId(bvisId);
 	offerEntitySemi.setPrice(semiPrice);
 	offerEntitySemi.setName("Halbkasko");
 	offerEntitySemi.setDescription("Semi coverage: Half of the damageamount get compensated.");
@@ -43,7 +43,7 @@ public class InsuranceOffering implements JavaDelegate {
 	// Give output to the user
 	System.out.println("Offertid: " + offerEntityFull.getOffer_Id());
 	System.out.println("Price: " + offerEntityFull.getPrice());
-	System.out.println("BvisId: " + offerEntityFull.getCustomerId());
+	//System.out.println("BvisId: " + offerEntityFull.getCustomerId());
 	System.out.println("Description: " + offerEntityFull.getDescription());
 	//System.out.println("name: " + offerEntityFull.getCustomerName());
 	//System.out.println(customerName);
