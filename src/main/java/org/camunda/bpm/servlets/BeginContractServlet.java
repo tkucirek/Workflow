@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +23,7 @@ import org.apache.commons.io.IOUtils;
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.ProcessEngines;
 import org.camunda.bpm.engine.RuntimeService;
+import org.camunda.bpm.engine.impl.util.json.JSONArray;
 import org.camunda.bpm.engine.impl.util.json.JSONObject;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.entities.OfferEntity;
@@ -139,21 +141,22 @@ public class BeginContractServlet extends HttpServlet {
 		OfferEntity offerhalf = (OfferEntity) runtimeService.getVariable(prozessid, "offerhalf");
 		OfferEntity offerfull = (OfferEntity) runtimeService.getVariable(prozessid, "offerfull");
 		
-		OfferEntity[] offers = new OfferEntity[2];
+		ArrayList <OfferEntity> offers =new ArrayList<OfferEntity>();
 		
-		offers[1] = offerhalf;
-		offers[2] = offerfull;
+		offers.add(offerhalf);
+		offers.add(offerfull);
+			
 		
 		JSONObject offerss = new JSONObject();
 		
 		offerss.put("Offers", offers);
+		
 		/*
 		beideoffer.put("HalbKasko", offerhalf);
 		beideoffer.put("VollKasko", offerfull);*/
 		
 		response.setContentType("application/json");
-		out.print(offers);
-		
+		out.print(new JSONArray(offers));
 		
 		
 		out.close();
