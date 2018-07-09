@@ -44,7 +44,8 @@ public class ConfirmationServlet extends HttpServlet {
 
 		JSONObject json = new JSONObject(jsonString); 
 		
-		String customer_id = String.valueOf(json.getLong("customer_id")) ;
+		String customer_id = String.valueOf(json.getString("customer_id")) ;
+		System.out.println("id ist:"+customer_id);
 		String offer_id = String.valueOf(json.getLong("offer_id"));
 		
 		//map.put("customer_id", customer_id);
@@ -63,9 +64,9 @@ public class ConfirmationServlet extends HttpServlet {
 			connection = DriverManager.getConnection(Customize.databasepath);
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30);
-
-			ResultSet result = statement.executeQuery("SELECT Process_Id from Instance WHERE Bvis_Id="+customer_id);
-			
+			System.out.println("before crash");
+			ResultSet result = statement.executeQuery("SELECT Process_Id from Instance WHERE Bvis_Id='"+customer_id+"'");
+			System.out.println("after crash");
 				 process_Id=result.getString("Process_Id");
 				 System.out.println(process_Id);
 		}
@@ -81,11 +82,11 @@ public class ConfirmationServlet extends HttpServlet {
 			}
 		}
 		
-		if(json.getLong("offer_id")== 1) {
+		if(json.getLong("offer_id")== 2) {
 			finalPrice = (long)runtimeService.getVariable(process_Id, "fullPrice");
 			offertype = "Vollkasko";
 			
-		}else if (json.getLong("offer_id") == 2) {
+		}else if (json.getLong("offer_id") == 1) {
 			finalPrice = (long) runtimeService.getVariable(process_Id, "semiPrice");
 			offertype = "Halbkasko";
 		}

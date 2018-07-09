@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+      
+      <f:view>
+  <f:metadata>
+    <!-- Start working on a task. Task Id is read internally from
+         request parameters and cached in the CDI conversation scope.
+    -->
+
+    <f:event type="preRenderView" listener="#{camundaTaskForm.startTaskForm()}" />
+  </f:metadata>
+      
+    <h:head>
+    <title>Capitol Inc - Terminate contract offer</title>
+    </h:head>
+    
+    <h:body>
+    <!-- User Form to handle new business customer -->
+    <h:form id="submitForm">
+       <div class="container">
+        
+        <div class="row">
+        
+          <div class="col-md-8 col-md-offset-4">
+          
+                    <div class="col-md-6">
+                    
+                    
+                     <h3> The customer has not answered the offer within a week. Please terminate the contract manually. </h3>
+                     <p><label>Contract details:</label></p>
+                     
+                     <!-- Panel Grid to list all the Businesscustomer details -->
+                     <b:panelGrid col-spans="5,7" cellpadding="5">
+                   
+                      <h:outputLabel  value="Customer ID:"/>
+           			  <p> #{contract.contractEntity.customerId}</p> 
+                     
+                      <h:outputLabel  value="Name:"/>
+           			  <p> #{contract.contractEntity.customerName}</p> 
+           			  
+           			   <h:outputLabel  value="Number of vehicles:"/>
+           			  <p> #{contract.contractEntity.number_of_vehicles}</p> 
+           			  
+           			  <h:outputLabel  value="Vehicle model:"/>
+           			  <p> #{contract.contractEntity.vehicle_model}</p> 
+           			  
+           			  <h:outputLabel  value="Rental duration:"/>
+           			  <p> #{contract.contractEntity.duration}</p> 
+           			  
+           			  </b:panelGrid>
+  
+                      
+                    <h:commandButton id="submit_button" value="Terminate contract" action="#{camundaTaskForm.completeTask()}" />
+                    
+                    </div>
+                  </div>	
+         </div>   
+        </div>
+        </h:form>
+    </h:body>
+   </f:view> 
+</html>

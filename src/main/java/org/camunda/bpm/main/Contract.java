@@ -39,12 +39,15 @@ public class Contract {
 	@Inject
 	private TaskForm taskForm;
 
-	private ContractEntity contractEntity;
+	public ContractEntity contractEntity;
 	private CustomerEntity customerEntity;
 	private InsuranceOffering insuranceOffering;
 	private Integer customerIsPrivate;
 	private String BvisId;
 	private String name;
+	private String phone;
+	private String mail;
+	private String address;
 
 	public void mergeOrderAndCompleteTask(ContractEntity contractEntity) {
 		// Merge detached order entity with current persisted state
@@ -63,6 +66,9 @@ public class Contract {
 
 		Map<String, Object> variables = test.getVariables();// Get all process variables
 		name=(String)variables.get("name");
+		phone=(String)variables.get("phone");
+		mail=(String)variables.get("mail");
+		address=(String)variables.get("address");
 		// Create customer and set order attributes for customer
 		if (variables.get("Customer_type").equals("private")) {
 			customerIsPrivate = 1;
@@ -102,7 +108,7 @@ public class Contract {
 		this.customerEntity = customerEntity;
 	}
 
-	public CustomerEntity getCustomer(Long customerId) {
+	public CustomerEntity getCustomer(String customerId) {
 		// Load customer entity from database
 		if (customerIsPrivate == 1) {
 			return entityManager.find(PrivateCustomer.class, customerId);
@@ -118,13 +124,17 @@ public class Contract {
 		// Load contract entity from database
 		return entityManager.find(ContractEntity.class, contractId);
 	}
-	
+	public ContractEntity getContractEntity() {
+
+		return this.contractEntity;
+	}
 	public void createContract(Map<String, Object> variables, DelegateExecution test) {
 		// Create new contract instance
 		this.setContractEntity(new ContractEntity());
 		
 		// Set contract attributes
-		contractEntity.setCustomerId(customerEntity.getId());
+		contractEntity.setCustomerId(BvisId);
+		contractEntity.setCustomerName(name);
 		contractEntity.setDuration(Long.valueOf((String) variables.get("rental_duration")));
 		contractEntity.setVehicle_model(Long.valueOf((String) variables.get("vehicle_model")));
 		contractEntity.setNumber_of_vehicles(Long.valueOf((String) variables.get("number_of_vehicles")));
@@ -191,25 +201,25 @@ public class Contract {
 			// set the information from the customerEntity
 
 			// insert values into the database
-			String insertStatement = "INSERT INTO Customer(Bvis_Id,Name,Number_Of_Claims,Private_Customer) VALUES('"
-					+ BvisId + "','" + dbname + "','" + dbNumberOfClaims + "','" + customerIsPrivate + "')";
+			String insertStatement = "INSERT INTO Customer(Bvis_Id,Name,Number_Of_Claims,Private_Customer,Address,Phone,Mail) VALUES('"
+					+ BvisId + "','" + dbname + "','" + dbNumberOfClaims + "','" + customerIsPrivate + "','" + address + "','"  + phone  +"','" + mail+"')";
 			PreparedStatement ps = connection.prepareStatement(insertStatement);
 			ps.executeUpdate();
 
 			// get the id of the just created customer (largest Id because of
 			// auto increment)
-			ResultSet rs_current = statement.executeQuery(
-					"SELECT Bvis_Id FROM Customer WHERE Capitol_Id = (SELECT MAX(Capitol_Id) FROM Customer)");
-			int dbCustomerId = rs_current.getInt("Bvis_Id");
+			//ResultSet rs_current = statement.executeQuery(
+				//	"SELECT Bvis_Id FROM Customer WHERE Capitol_Id = (SELECT MAX(Capitol_Id) FROM Customer)");
+			//int dbCustomerId = rs_current.getInt("Bvis_Id");
 			if (customerIsPrivate == 1) {
 				String dbbirthday = ((PrivateCustomer) customerEntity).getDateOfBirth();
 
-				String insertStatement2 = "INSERT INTO PrivateCustomer(Bvis_Id,Birthday,Name) VALUES('" + dbCustomerId
+				String insertStatement2 = "INSERT INTO PrivateCustomer(Bvis_Id,Birthday,Name) VALUES('" + BvisId
 						+ "','" + dbbirthday + "','" + dbname + "')";
 				PreparedStatement ps2 = connection.prepareStatement(insertStatement2);
 				ps2.executeUpdate();
 			} else if (customerIsPrivate == 0) {
-				String insertStatement3 = "INSERT INTO FirmCustomer(Bvis_Id,Company_Name) VALUES('" + dbCustomerId
+				String insertStatement3 = "INSERT INTO FirmCustomer(Bvis_Id,Company_Name) VALUES('" + BvisId
 						+ "','" + dbname + "')";
 				PreparedStatement ps3 = connection.prepareStatement(insertStatement3);
 				ps3.executeUpdate();
@@ -358,16 +368,17 @@ public class Contract {
 
 	public void recordContract(DelegateExecution test) throws ClassNotFoundException {
 		
-		Map<String, Object> variables = test.getVariables();
-		System.out.println(variables);
-		/*System.out.println("Creating new contract entry");
+		//Map<String, Object> variables = test.getVariables();
+		//System.out.println(variables);
+		System.out.println("Creating new contract entry");
 
-		Map<String, Object> variables = test.getVariables();
-		long finalPrice=Long.valueOf((String) test.getVariable("finalPrice"));
+		long finalPrice=(long)test.getVariable("finalPrice");
+		String finalOfferType=(String) test.getVariable("finalOfferType");
 		long duration =contractEntity.getDuration();
-		long model;
-		long numberOfVehicle;
-
+		long model=contractEntity.getVehicle_model();
+		long numberOfVehicle =contractEntity.getNumber_of_vehicles();
+		//contractEntity.setContractType(finalOfferType);
+		//contractEntity.setPrice(finalPrice);
 		Class.forName("org.sqlite.JDBC");
 		Connection connection = null;
 		try {
@@ -375,39 +386,18 @@ public class Contract {
 			connection = DriverManager.getConnection(Customize.databasepath);
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30);
-
-			String dbname = (customerEntity).getName();
-			int dbNumberOfClaims = 0;
+			
 
 			// set the information from the customerEntity
 
 			// insert values into the database
-			String insertStatement = "INSERT INTO Contract(Bvis_Id,Price,Coverage,Duration_In_Days,Model,Number_Of_Vehicles) VALUES('"
-					+ BvisId + "','" + finalPrice + "','" + dbNumberOfClaims + "','" + duration + "','" + model + "','" + numberOfVehicle+"')";
+			String insertStatement = "INSERT INTO Contract(Bvis_Id,Price,Coverage,Duration,Model,Number_Of_Vehicles) VALUES('"
+					+ BvisId + "','" + finalPrice + "','" + finalOfferType + "','" + duration + "','" + model + "','" + numberOfVehicle+"')";
 			PreparedStatement ps = connection.prepareStatement(insertStatement);
 			ps.executeUpdate();
 
-			// get the id of the just created customer (largest Id because of
-			// auto increment)
-			ResultSet rs_current = statement.executeQuery(
-					"SELECT Bvis_Id FROM Customer WHERE Capitol_Id = (SELECT MAX(Capitol_Id) FROM Customer)");
-			int dbCustomerId = rs_current.getInt("Bvis_Id");
-			if (customerIsPrivate == 1) {
-				String dbbirthday = ((PrivateCustomer) customerEntity).getDateOfBirth();
 
-				String insertStatement2 = "INSERT INTO PrivateCustomer(Bvis_Id,Birthday,Name) VALUES('" + dbCustomerId
-						+ "','" + dbbirthday + "','" + dbname + "')";
-				PreparedStatement ps2 = connection.prepareStatement(insertStatement2);
-				ps2.executeUpdate();
-			} else if (customerIsPrivate == 0) {
-				String insertStatement3 = "INSERT INTO FirmCustomer(Bvis_Id,Company_Name) VALUES('" + dbCustomerId
-						+ "','" + dbname + "')";
-				PreparedStatement ps3 = connection.prepareStatement(insertStatement3);
-				ps3.executeUpdate();
-
-			}
-
-			System.out.println("Customer entry has been created.");
+			System.out.println("Contract entry has been created.");
 
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
@@ -419,5 +409,5 @@ public class Contract {
 				System.err.println(e);
 			}
 		}
-	}*/
-}}
+	}
+}
