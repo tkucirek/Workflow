@@ -14,21 +14,21 @@ public class OfferEntity {
 	protected double price;
 	protected String customerId;
 	protected String description;
-	/*protected String customerName;
+	protected String name;
 	
 	
-	public String getCustomerName() {
-		return customerName;
+	public String getName() {
+		return name;
 	}
-	public void setCustomerName(String customerName) {
-		this.customerName = customerName;
+	public void setName(String name) {
+		this.name = name;
 	}
-	*/
-	public int getOfferId() {
+	
+	public int getOffer_Id() {
 		return id;
 	}
-	public void setOfferId(int offerId) {
-		this.id = offerId;
+	public void setOffer_Id(int offer_Id) {
+		this.id = offer_Id;
 	}
 	public double getPrice() {
 		return price;

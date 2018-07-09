@@ -123,7 +123,7 @@ public class Claim {
 			
 			int number1 = resultnumber.getInt(1);
 			
-			damageamount = (model1 * 100) * number1 * (claimEntity.getDamageClassification() * 5);
+			damageamount = (model1 * 100) * (claimEntity.getDamageClassification() * 5);
 			
 			System.out.println("customerid " + claimEntity.getCustomerId());
 			System.out.println("class " + claimEntity.getDamageClassification()*5);
@@ -169,9 +169,9 @@ public class Claim {
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30);
 
-			ResultSet result = statement.executeQuery("SELECT Coverage from Contract WHERE Bvis_Id= '" + customer_id + "'" );
+			ResultSet result = statement.executeQuery("SELECT Coverage from Contract WHERE Bvis_Id= '" + customer_id + "'");
 			
-			String coverage = String.valueOf(result);
+			String coverage = result.getString("Coverage");
 			
 			System.out.println("Coverage " + coverage);
 			
@@ -200,16 +200,20 @@ public class Claim {
 		
 		String coverage = (String) test.getVariable("coverage");
 		
-		long damage_Assessment = 0;
-		if (coverage == "Halbkasko") {
-			damage_Assessment = Long.valueOf((String) test.getVariable("damage_Amount")) /2;
-		}else if (coverage == "Vollkasko") {
-			damage_Assessment = Long.valueOf((String) test.getVariable("damage_Amount"));
+		long damage_Assessment;
+		
+		damage_Assessment = (long) test.getVariable("damage_Amount");
+		System.out.println("Coverage später: " + coverage);
+		long deductible_Amount;
+		if (coverage.equals("Halbkasko") ) {
+			deductible_Amount = (long) test.getVariable("damage_Amount") /2;
+		}else {
+			deductible_Amount = 0;
 		}
 		
 		System.out.println("Damage Assessment: " + damage_Assessment);
 		
-		long deductible_Amount = (long) test.getVariable("damage_Amount") - damage_Assessment;
+		//long deductible_Amount = (long) test.getVariable("damage_Amount") - damage_Assessment;
 		
 		test.setVariable("deductible_Amount", deductible_Amount);
 		System.out.println("Deductible Amount " + deductible_Amount);
