@@ -84,10 +84,10 @@
       <bpmn:incoming>SequenceFlow_1suy8p4</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1thu2x9</bpmn:outgoing>
       <bpmn:timerEventDefinition>
-        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">P10D</bpmn:timeDuration>
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT1M</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
-    <bpmn:userTask id="terminate_contract" name="Terminate contract">
+    <bpmn:userTask id="terminate_contract" name="Terminate contract" camunda:formKey="app:closeContract.jsf">
       <bpmn:incoming>SequenceFlow_1thu2x9</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1anliaq</bpmn:outgoing>
     </bpmn:userTask>

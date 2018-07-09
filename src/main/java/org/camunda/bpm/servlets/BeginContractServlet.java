@@ -54,6 +54,9 @@ public class BeginContractServlet extends HttpServlet {
 		String vehicle_model = json.getString("vehicle_model");
 		String number_of_vehicles = json.getString("number_of_vehicles");
 		String birth_date = json.getString("birth_date");
+		String phone = json.getString("phone_number");
+		String mail = json.getString("e_mail");
+		String address = json.getString("address");
 		
 		System.out.println(json);
 		
@@ -64,6 +67,9 @@ public class BeginContractServlet extends HttpServlet {
 		map.put("vehicle_model", vehicle_model);
 		map.put("number_of_vehicles", number_of_vehicles);
 		map.put("birthdate", birth_date);
+		map.put("phone", phone);
+		map.put("mail", mail);
+		map.put("address", address);
 		
 		
 		System.out.println(map);

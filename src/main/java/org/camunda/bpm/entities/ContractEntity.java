@@ -20,15 +20,22 @@ public class ContractEntity implements Serializable {
 	  protected long version;
 	  
 
-	protected Long customerId;
+	protected String customerId;
+	protected String customerName;
+
 	protected Long vehicle_model;
 	protected Long number_of_vehicles;
 	protected int contractId;
-	protected double price;
+	protected long price;
 	protected Long duration;
 	protected String contractType;
 	
-	
+	public String getCustomerName() {
+		return customerName;
+	}
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
+	}
 	public String getContractType() {
 		return contractType;
 	}
@@ -41,10 +48,10 @@ public class ContractEntity implements Serializable {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public Long getCustomerId() {
+	public String getCustomerId() {
 		return customerId;
 	}
-	public void setCustomerId(Long customerId) {
+	public void setCustomerId(String customerId) {
 		this.customerId = customerId;
 	}
 	public Long getVehicle_model() {
@@ -65,10 +72,10 @@ public class ContractEntity implements Serializable {
 	public void setContractId(int contractId) {
 		this.contractId = contractId;
 	}
-	public double getPrice() {
+	public long getPrice() {
 		return price;
 	}
-	public void setPrice(double price) {
+	public void setPrice(long price) {
 		this.price = price;
 	}
 	public long getDuration() {
