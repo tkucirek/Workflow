@@ -23,4 +23,16 @@
     <url-pattern>/ConfirmationServlet</url-pattern>
   </servlet-mapping>
   
+  <servlet>
+    <description></description>
+    <display-name>BeginClaimServlet</display-name>
+    <servlet-name>BeginClaimServlet</servlet-name>
+    <servlet-class>org.camunda.bpm.servlets.BeginClaimServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>BeginClaimServlet</servlet-name>
+    <url-pattern>/BeginClaimServlet</url-pattern>
+  </servlet-mapping>
+  
+  
 </web-app>

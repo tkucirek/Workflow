@@ -151,16 +151,63 @@ public class Claim {
 			}
 		}
 		
-		test.setVariable("Damage_Amount", damageamount);
+		test.setVariable("damage_Amount", damageamount);
 	}
 
-	public void CheckDamage (DelegateExecution test) {
 	
-}
-	public void CheckDatabase (DelegateExecution test) {
+	public void CrossCheckWithContract (DelegateExecution test) throws ClassNotFoundException {
 		
+		Class.forName("org.sqlite.JDBC");
+
+		Connection connection = null;
+		
+		long customer_id = claimEntity.getCustomerId();
+		
+		try {
+			// create a database connection
+			connection = DriverManager.getConnection(Customize.databasepath);
+			Statement statement = connection.createStatement();
+			statement.setQueryTimeout(30);
+
+			ResultSet result = statement.executeQuery("SELECT Coverage from Contract WHERE Bvis_Id=" + customer_id );
+			
+			String coverage = String.valueOf(result);
+			
+			test.setVariable("coverage", coverage);
+			
+		}
+		
+		catch (SQLException e) {
+			System.err.println(e.getMessage());
+		} finally {
+			try {
+				if (connection != null)
+					connection.close();
+			} catch (SQLException e) {
+				System.err.println(e);
+			}
+			
+			
+		}
+		
+		
+	
 	}
 	public void DetermineDeductibleAmount (DelegateExecution test) {
+		
+		
+		String coverage = (String) test.getVariable("coverage");
+		
+		long damage_Assessment = 0;
+		if (coverage == "Halbkasko") {
+			damage_Assessment = Long.valueOf((String) test.getVariable("damage_Amount")) /2;
+		}else if (coverage == "Vollkasko") {
+			damage_Assessment = Long.valueOf((String) test.getVariable("damage_Amount"));
+		}
+		
+		long deductible_Amount = Long.valueOf((String) test.getVariable("damage_Amount")) - damage_Assessment;
+		
+		test.setVariable("deductible_Amount", deductible_Amount);
 		
 	}
 	public void SendDamageAssessment (DelegateExecution test) {
@@ -171,6 +218,8 @@ public class Claim {
 	}
 	
 	public void AdjustCustomer (DelegateExecution test) {
+		
+		
 	
 }
 }
