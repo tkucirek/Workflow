@@ -24,6 +24,7 @@ import org.camunda.bpm.engine.ProcessEngines;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.impl.util.json.JSONObject;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
+import org.camunda.bpm.entities.OfferEntity;
 import org.camunda.bpm.main.Customize;
 import org.camunda.bpm.messages.InsuranceOffering;
 
@@ -135,15 +136,23 @@ public class BeginContractServlet extends HttpServlet {
 			e.printStackTrace();
 		}*/
 		
-		String offerhalf = (String) runtimeService.getVariable(prozessid, "offerhalf");
-		String offerfull = (String) runtimeService.getVariable(prozessid, "offerfull");
+		OfferEntity offerhalf = (OfferEntity) runtimeService.getVariable(prozessid, "offerhalf");
+		OfferEntity offerfull = (OfferEntity) runtimeService.getVariable(prozessid, "offerfull");
 		
-		JSONObject beideoffer = new JSONObject();
+		OfferEntity[] offers = new OfferEntity[2];
+		
+		offers[1] = offerhalf;
+		offers[2] = offerfull;
+		
+		JSONObject offerss = new JSONObject();
+		
+		offerss.put("Offers", offers);
+		/*
 		beideoffer.put("HalbKasko", offerhalf);
-		beideoffer.put("VollKasko", offerfull);
+		beideoffer.put("VollKasko", offerfull);*/
 		
 		response.setContentType("application/json");
-		out.print(beideoffer);
+		out.print(offers);
 		
 		
 		

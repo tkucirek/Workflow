@@ -27,21 +27,21 @@ public class InsuranceOffering implements JavaDelegate {
 	// Generate ContractOfferEntity to send to the partner
 	System.out.println("erstelle neue entitiy");
 	OfferEntity offerEntityFull = new OfferEntity();
-	offerEntityFull.setOfferId(2);
+	offerEntityFull.setOffer_Id(2);
 	offerEntityFull.setCustomerId(bvisId);
 	offerEntityFull.setPrice(fullPrice);
-	//offerEntityFull.setCustomerName(customerName);
-	offerEntityFull.setDescription("Full coverage");
+	offerEntityFull.setName("Vollkasko");
+	offerEntityFull.setDescription("Full coverage: All damages get compensated.");
 	
 	OfferEntity offerEntitySemi = new OfferEntity();
-	offerEntitySemi.setOfferId(1);
+	offerEntitySemi.setOffer_Id(1);
 	offerEntitySemi.setCustomerId(bvisId);
 	offerEntitySemi.setPrice(semiPrice);
-	//offerEntitySemi.setCustomerName(customerName);
-	offerEntitySemi.setDescription("Semi coverage");
+	offerEntitySemi.setName("Halbkasko");
+	offerEntitySemi.setDescription("Semi coverage: Half of the damageamount get compensated.");
 
 	// Give output to the user
-	System.out.println("Offertid: " + offerEntityFull.getOfferId());
+	System.out.println("Offertid: " + offerEntityFull.getOffer_Id());
 	System.out.println("Price: " + offerEntityFull.getPrice());
 	System.out.println("BvisId: " + offerEntityFull.getCustomerId());
 	System.out.println("Description: " + offerEntityFull.getDescription());
@@ -61,8 +61,8 @@ public class InsuranceOffering implements JavaDelegate {
 	jsonInString2 = mapper2.writeValueAsString(offerEntitySemi);
 	System.out.println("Contractoffer send to the partner: " + jsonInString2);
 	
-	test.setVariable("offerhalf", jsonInString);
-	test.setVariable("offerfull", jsonInString2);
+	test.setVariable("offerhalf", offerEntitySemi);
+	test.setVariable("offerfull", offerEntityFull);
 	
 }
 	

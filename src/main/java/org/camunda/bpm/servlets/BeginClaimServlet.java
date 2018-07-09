@@ -55,10 +55,10 @@ public class BeginClaimServlet extends HttpServlet {
 		processInstance = runtimeService.startProcessInstanceByMessage("instantiationMessageClaim", map);
 		String prozessid = processInstance.getId();
 		
-		String deductible_Amount = (String) runtimeService.getVariable(prozessid, "deductible_Amount");
+		//String deductible_Amount = (String) runtimeService.getVariable(prozessid, "deductible_Amount");
 		
 		
-		out.print(deductible_Amount);
+		out.print("ok");
 		
 		
 }
