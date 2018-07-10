@@ -43,7 +43,7 @@ public class BeginClaimServlet extends HttpServlet {
 
 		JSONObject json = new JSONObject(jsonString); 
 		
-		String customer_id = String.valueOf(json.getLong("customer_id")) ;
+		String customer_id = json.getString("customer_id") ;
 		String damage_classification = String.valueOf(json.getLong("damage_classification"));
 		
 		

@@ -99,14 +99,6 @@ public class ConfirmationServlet extends HttpServlet {
 		.correlateWithResult();
 
 		
-		
-	
-		
-		
-		
-	
-		
-		
 	
 	}
 }

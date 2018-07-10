@@ -92,7 +92,7 @@ public class Claim {
 		// Create new contract instance
 		this.setClaimEntity(new ClaimEntity());
 
-		claimEntity.setCustomerId(Long.valueOf((String) variables.get("customer_id")));
+		claimEntity.setCustomerId((String) variables.get("customer_id"));
 		claimEntity.setDamageClassification(Long.valueOf((String) variables.get("damage_classification")));
 		
 	}
@@ -111,7 +111,7 @@ public class Claim {
 			
 			// set the transmitted information about the claim
 			long dbDamageClassification = claimEntity.getDamageClassification();
-			long dbCustomerId = claimEntity.getCustomerId();
+			//long dbCustomerId = claimEntity.getCustomerId();
 			
 			ResultSet resultmodel = statement.executeQuery("SELECT Model FROM Contract WHERE Bvis_Id = '" 
 					+ claimEntity.getCustomerId() + "'");
@@ -161,7 +161,7 @@ public class Claim {
 
 		Connection connection = null;
 		
-		long customer_id = claimEntity.getCustomerId();
+		String customer_id = claimEntity.getCustomerId();
 		
 		try {
 			// create a database connection
@@ -201,7 +201,7 @@ public class Claim {
 		String coverage = (String) test.getVariable("coverage");
 		
 		long damage_Assessment;
-		long customer_id = claimEntity.getCustomerId();
+		String customer_id = claimEntity.getCustomerId();
 		
 		damage_Assessment = (long) test.getVariable("damage_Amount");
 		System.out.println("Coverage später: " + coverage);
@@ -255,7 +255,7 @@ public class Claim {
 
 		Connection connection = null;
 		
-		long customer_id = claimEntity.getCustomerId();
+		String customer_id = claimEntity.getCustomerId();
 		
 		try {
 			// create a database connection
