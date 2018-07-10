@@ -201,6 +201,7 @@ public class Claim {
 		String coverage = (String) test.getVariable("coverage");
 		
 		long damage_Assessment;
+		long customer_id = claimEntity.getCustomerId();
 		
 		damage_Assessment = (long) test.getVariable("damage_Amount");
 		System.out.println("Coverage später: " + coverage);
@@ -209,6 +210,33 @@ public class Claim {
 			deductible_Amount = (long) test.getVariable("damage_Amount") /2;
 		}else {
 			deductible_Amount = 0;
+		}
+		
+		Connection connection = null;
+		
+		try {
+			// create a database connection
+			connection = DriverManager.getConnection(Customize.databasepath);
+			Statement statement = connection.createStatement();
+			statement.setQueryTimeout(30);
+
+			String insertStatement = "UPDATE Claim SET Deductible_Amount ="+ deductible_Amount +" WHERE Bvis_Id= '" + customer_id + "'";
+			PreparedStatement ps = connection.prepareStatement(insertStatement);
+			ps.executeUpdate();
+
+				
+			
+		}
+	
+		catch (SQLException e) {
+			System.err.println(e.getMessage());
+		} finally {
+			try {
+				if (connection != null)
+					connection.close();
+			} catch (SQLException e) {
+				System.err.println(e);
+			}
 		}
 		
 		System.out.println("Damage Assessment: " + damage_Assessment);
