@@ -158,8 +158,8 @@ public class Contract {
 
 			ResultSet result = statement.executeQuery("SELECT * from Customer;");
 			while (result.next()) {
-				System.out.println("Check whether customer with name: " + result.getString("Name") + "exists.");
-				if ((customerEntity).getName().equals(result.getString("Name"))) {
+				System.out.println("Check whether customer with name: " + result.getString("Bvis_Id") + "exists.");
+				if (BvisId.equals(result.getString("Bvis_Id"))) {
 					System.out.println("Customer already exists in database");
 					customerExists = true;
 				}

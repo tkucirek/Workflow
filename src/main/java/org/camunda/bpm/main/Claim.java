@@ -219,12 +219,7 @@ public class Claim {
 		System.out.println("Deductible Amount " + deductible_Amount);
 		
 	}
-	public void SendDamageAssessment (DelegateExecution test) {
-		
-	}
-	public void SendPayment (DelegateExecution test) {
-		
-	}
+
 	
 	public void AdjustCustomer (DelegateExecution test) {
 		
