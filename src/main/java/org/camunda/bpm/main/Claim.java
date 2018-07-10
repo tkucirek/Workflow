@@ -131,14 +131,14 @@ public class Claim {
 			
 			System.out.println("damageamount " +damageamount);
 			
-			// write database entry
+			/*// write database entry
 			String insertStatement = "INSERT INTO Claim(Damage_Amount, Bvis_Id) VALUES('"
 					+ damageamount + "','" + claimEntity.getCustomerId() + "')";
 			System.out.println(claimEntity.getCustomerId());
 			PreparedStatement ps = connection.prepareStatement(insertStatement);
-			ps.executeUpdate();
+			ps.executeUpdate();*/
 
-			System.out.println("The claim should now be recorded in capitol.db");
+			//System.out.println("The claim should now be recorded in capitol.db");
 
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
@@ -220,9 +220,9 @@ public class Claim {
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30);
 
-			String insertStatement = "UPDATE Claim SET Deductible_Amount ="+ deductible_Amount +" WHERE Bvis_Id= '" + customer_id + "'";
+			/*String insertStatement = "UPDATE Claim SET Deductible_Amount ="+ deductible_Amount +" WHERE Bvis_Id= '" + customer_id + "'";
 			PreparedStatement ps = connection.prepareStatement(insertStatement);
-			ps.executeUpdate();
+			ps.executeUpdate();*/
 
 				
 			
@@ -284,4 +284,45 @@ public class Claim {
 			} catch (SQLException e) {
 				System.err.println(e);
 			}
-}}}
+			
+			
+			
+			}
+		}
+	
+	public void recordContract (DelegateExecution test) throws ClassNotFoundException {
+		
+		Class.forName("org.sqlite.JDBC");
+
+		Connection connection = null;
+		try {
+			System.out.println("Databasepath: " + Customize.databasepath);
+			// create a database connection
+			connection = DriverManager.getConnection(Customize.databasepath);
+			System.out.println("Databasepath : " + Customize.databasepath);
+			Statement statement = connection.createStatement();
+			statement.setQueryTimeout(30); // set timeout to 30 sec.
+			
+			String insertStatement = "INSERT INTO Claim(Damage_Amount, Bvis_Id, Deductible_Amount) VALUES('"
+					+ test.getVariable("damage_Amount") + "','" + claimEntity.getCustomerId() + "','" + test.getVariable("deductible_Amount") +"')";
+			System.out.println(claimEntity.getCustomerId());
+			PreparedStatement ps = connection.prepareStatement(insertStatement);
+			ps.executeUpdate();
+		
+			
+			
+		
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+		} finally {
+			try {
+				if (connection != null)
+					connection.close();
+			} catch (SQLException e) {
+				System.err.println(e);
+			}
+		}
+		
+		
+	}
+}
