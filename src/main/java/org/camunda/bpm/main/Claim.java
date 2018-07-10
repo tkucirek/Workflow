@@ -211,6 +211,33 @@ public class Claim {
 			deductible_Amount = 0;
 		}
 		
+		Connection connection = null;
+		
+		try {
+			// create a database connection
+			connection = DriverManager.getConnection(Customize.databasepath);
+			Statement statement = connection.createStatement();
+			statement.setQueryTimeout(30);
+
+			String insertStatement = "INSERT INTO Claim(Deductible_Amount) VALUES('" + deductible_Amount +"')";
+			PreparedStatement ps = connection.prepareStatement(insertStatement);
+			ps.executeUpdate();
+
+				
+			
+		}
+	
+		catch (SQLException e) {
+			System.err.println(e.getMessage());
+		} finally {
+			try {
+				if (connection != null)
+					connection.close();
+			} catch (SQLException e) {
+				System.err.println(e);
+			}
+		}
+		
 		System.out.println("Damage Assessment: " + damage_Assessment);
 		
 		//long deductible_Amount = (long) test.getVariable("damage_Amount") - damage_Assessment;

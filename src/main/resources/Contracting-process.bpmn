@@ -157,7 +157,7 @@
   </bpmn:process>
   <bpmn:message id="Message_1n6dn6g" name="contractConfirmed" />
   <bpmn:message id="Message_1up73u7" name="instantiationMessageContract" />
-  <bpmn:message id="Message_1urk4gn" name="Message_2iv29t5" />
+  <bpmn:message id="Message_1urk4gn" name="contractEnds" />
   <bpmn:message id="Message_1phvq3q" name="Message_1ucsimb" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0eg8kno">

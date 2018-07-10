@@ -34,5 +34,16 @@
     <url-pattern>/BeginClaimServlet</url-pattern>
   </servlet-mapping>
   
+  <servlet>
+    <description></description>
+    <display-name>ContractEndServlet</display-name>
+    <servlet-name>ContractEndServlet</servlet-name>
+    <servlet-class>org.camunda.bpm.servlets.ContractEndServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ContractEndServlet</servlet-name>
+    <url-pattern>/ContractEndServlet</url-pattern>
+  </servlet-mapping>
+  
   
 </web-app>
