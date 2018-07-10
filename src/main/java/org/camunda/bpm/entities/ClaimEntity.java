@@ -26,16 +26,16 @@ public class ClaimEntity implements Serializable{
 	@Version
 	protected long version;
 	
-	protected Long customerId;
+	protected String customerId;
 	protected Long damageClassification;
 	protected boolean completed;
 	
 	
-	public long getCustomerId() {
+	public String getCustomerId() {
 		return customerId;
 	}
-	public void setCustomerId(Long long1) {
-		this.customerId = long1;
+	public void setCustomerId(String string) {
+		this.customerId = string;
 	}
 	public long getDamageClassification() {
 		return damageClassification;
