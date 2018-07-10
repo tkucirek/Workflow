@@ -57,7 +57,7 @@
       <bpmn:incoming>SequenceFlow_0fsvjve</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_04z86ur</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="adjust_customer_damage_category" name="Adjust customer damage category" camunda:expression="${true}">
+    <bpmn:serviceTask id="adjust_customer_damage_category" name="Adjust customer damage category" camunda:expression="${claim.AdjustCustomer(execution)}">
       <bpmn:incoming>SequenceFlow_04z86ur</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1fa1ohu</bpmn:outgoing>
       <bpmn:dataOutputAssociation id="DataOutputAssociation_1by7585">
