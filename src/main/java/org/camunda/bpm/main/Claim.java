@@ -201,6 +201,7 @@ public class Claim {
 		String coverage = (String) test.getVariable("coverage");
 		
 		long damage_Assessment;
+		long customer_id = claimEntity.getCustomerId();
 		
 		damage_Assessment = (long) test.getVariable("damage_Amount");
 		System.out.println("Coverage später: " + coverage);
@@ -219,7 +220,7 @@ public class Claim {
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30);
 
-			String insertStatement = "INSERT INTO Claim(Deductible_Amount) VALUES('" + deductible_Amount +"')";
+			String insertStatement = "UPDATE Claim SET Deductible_Amount ="+ deductible_Amount +" WHERE Bvis_Id= '" + customer_id + "'";
 			PreparedStatement ps = connection.prepareStatement(insertStatement);
 			ps.executeUpdate();
 
