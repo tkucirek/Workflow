@@ -248,9 +248,39 @@ public class Claim {
 	}
 
 	
-	public void AdjustCustomer (DelegateExecution test) {
+	public void AdjustCustomer (DelegateExecution test) throws ClassNotFoundException {
 		
+		Class.forName("org.sqlite.JDBC");
+
+		Connection connection = null;
+		
+		long customer_id = claimEntity.getCustomerId();
+		
+		try {
+			// create a database connection
+			connection = DriverManager.getConnection(Customize.databasepath);
+			Statement statement = connection.createStatement();
+			statement.setQueryTimeout(30);
+
+			ResultSet result = statement.executeQuery("SELECT Number_Of_Claims from Customer WHERE Bvis_Id= '" + customer_id + "'");
+			
+			int claimNumber = result.getInt("Number_Of_Claims");
+			System.out.println("old number of claims:"+claimNumber);
+			claimNumber =claimNumber +1;
+			System.out.println("new number of claims:"+claimNumber);
+			String insertStatement = "UPDATE Customer SET Number_Of_Claims ="+ claimNumber +" WHERE Bvis_Id= '" + customer_id + "'";
+			PreparedStatement ps = connection.prepareStatement(insertStatement);
+			ps.executeUpdate();
 		
 	
 }
-}
+		catch (SQLException e) {
+			System.err.println(e.getMessage());
+		} finally {
+			try {
+				if (connection != null)
+					connection.close();
+			} catch (SQLException e) {
+				System.err.println(e);
+			}
+}}}
