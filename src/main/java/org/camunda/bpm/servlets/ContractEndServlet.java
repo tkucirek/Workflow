@@ -92,12 +92,12 @@ public class ContractEndServlet extends HttpServlet{
 				 damage_Amount = result.getLong("sum(Damage_Amount)");
 				 
 			ResultSet result3 = statement.executeQuery("SELECT SUM(Deductible_Amount) from Claim WHERE Bvis_Id='"+customer_id+"'");
-				 deductible_Amount = (int) result.getLong("sum(Deductible_Amount)");
+				 deductible_Amount = (int) result3.getLong("sum(Deductible_Amount)");
 				  
 				 
 			ResultSet result2 = statement.executeQuery("SELECT Number_Of_Claims from Customer WHERE Bvis_Id='"+customer_id+"'");
-				 claim_Fee = result2.getInt("Number_Of_Claims");
-				 final_Payment = (int) (deductible_Amount + (claim_Fee *100));
+				 claim_Fee = (result2.getInt("Number_Of_Claims")*100);
+				 final_Payment = (int) (deductible_Amount + claim_Fee );
 				 
 				 
 				 
