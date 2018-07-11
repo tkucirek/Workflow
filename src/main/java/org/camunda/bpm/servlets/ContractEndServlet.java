@@ -57,11 +57,10 @@ public class ContractEndServlet extends HttpServlet{
 			connection = DriverManager.getConnection(Customize.databasepath);
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30);
-			System.out.println("before crash");
 			ResultSet result = statement.executeQuery("SELECT Process_Id from Instance WHERE Bvis_Id='"+customer_id+"'");
-			System.out.println("after crash");
 				 process_Id=result.getString("Process_Id");
-				 System.out.println(process_Id);
+				 System.out.println("ProcessId : " + process_Id);
+				 
 		}
 		
 		catch (SQLException e) {
@@ -78,6 +77,7 @@ public class ContractEndServlet extends HttpServlet{
 		map.put("customer_id", customer_id);
 		
 		runtimeService.createMessageCorrelation("contractEnds").processInstanceId(process_Id).setVariables(map).correlateWithResult();
+		System.out.println("The Contract with the ID " + process_Id + " has expired");
 		
 		
 		JSONObject contractend = new JSONObject();
@@ -122,8 +122,11 @@ public class ContractEndServlet extends HttpServlet{
 		contractend.put("claim_Fee", claim_Fee);
 		contractend.put("damage_Amount", damage_Amount);
 		
+		
+		
 		response.setContentType("application/json");
 		out.print(contractend);
+		System.out.println("Final Payment: " + final_Payment + " Claim Fee: " + claim_Fee + " Damageamount: " + damage_Amount);
 	}
 	
 	

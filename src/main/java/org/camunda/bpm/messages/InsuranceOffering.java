@@ -30,14 +30,14 @@ public class InsuranceOffering implements JavaDelegate {
 	offerEntityFull.setOffer_Id(2);
 	//offerEntityFull.setCustomerId(bvisId);
 	offerEntityFull.setPrice(fullPrice);
-	offerEntityFull.setName("Vollkasko");
+	offerEntityFull.setName("Full coverage");
 	offerEntityFull.setDescription("Full coverage: All damages get compensated.");
 	
 	OfferEntity offerEntitySemi = new OfferEntity();
 	offerEntitySemi.setOffer_Id(1);
 	//offerEntitySemi.setCustomerId(bvisId);
 	offerEntitySemi.setPrice(semiPrice);
-	offerEntitySemi.setName("Halbkasko");
+	offerEntitySemi.setName("Semi coverage");
 	offerEntitySemi.setDescription("Semi coverage: Half of the damageamount get compensated.");
 
 	// Give output to the user

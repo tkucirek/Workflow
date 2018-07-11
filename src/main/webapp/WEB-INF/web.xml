@@ -45,5 +45,16 @@
     <url-pattern>/ContractEndServlet</url-pattern>
   </servlet-mapping>
   
+    <servlet>
+    <description></description>
+    <display-name>PaymentServlet</display-name>
+    <servlet-name>PaymentServlet</servlet-name>
+    <servlet-class>org.camunda.bpm.servlets.PaymentServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>PaymentServlet</servlet-name>
+    <url-pattern>/PaymentServlet</url-pattern>
+  </servlet-mapping>
+  
   
 </web-app>
