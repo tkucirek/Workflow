@@ -57,7 +57,7 @@ public class PaymentServlet extends HttpServlet{
 			statement.setQueryTimeout(30);
 			ResultSet result = statement.executeQuery("SELECT Process_Id from Instance WHERE Bvis_Id='"+customer_id+"'");
 				 process_Id=result.getString("Process_Id");
-				 System.out.println("ProzessId: " + process_Id);
+				 System.out.println("PaymentProzessId: " + process_Id);
 		}
 		
 		catch (SQLException e) {
@@ -73,6 +73,9 @@ public class PaymentServlet extends HttpServlet{
 		
 		
 		runtimeService.setVariable(process_Id, "money", money);
+		System.out.println(money);
+		
+		runtimeService.createMessageCorrelation("paymentRecieved").processInstanceId(process_Id).correlateWithResult();
 
 	}
 }

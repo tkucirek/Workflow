@@ -144,7 +144,7 @@
     <bpmn:intermediateCatchEvent id="IntermediateThrowEvent_19ywn7p" name="payment received">
       <bpmn:incoming>SequenceFlow_06jztfv</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0x5bhie</bpmn:outgoing>
-      <bpmn:messageEventDefinition messageRef="Message_1phvq3q" />
+      <bpmn:messageEventDefinition messageRef="Message_0knvpif" />
     </bpmn:intermediateCatchEvent>
     <bpmn:sequenceFlow id="SequenceFlow_0x5bhie" sourceRef="IntermediateThrowEvent_19ywn7p" targetRef="collect_inurance_fees" />
     <bpmn:userTask id="collect_inurance_fees" name="Collect insurance fees" camunda:formKey="app:payment.jsf">
@@ -159,6 +159,7 @@
   <bpmn:message id="Message_1up73u7" name="instantiationMessageContract" />
   <bpmn:message id="Message_1urk4gn" name="contractEnds" />
   <bpmn:message id="Message_1phvq3q" name="Message_1ucsimb" />
+  <bpmn:message id="Message_0knvpif" name="paymentRecieved" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0eg8kno">
       <bpmndi:BPMNShape id="Participant_0pygkfv_di" bpmnElement="contracting_process">
