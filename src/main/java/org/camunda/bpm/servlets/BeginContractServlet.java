@@ -151,9 +151,6 @@ public class BeginContractServlet extends HttpServlet {
 		
 		offerss.put("Offers", offers);
 		
-		/*
-		beideoffer.put("HalbKasko", offerhalf);
-		beideoffer.put("VollKasko", offerfull);*/
 		
 		response.setContentType("application/json");
 		out.print(new JSONArray(offers));

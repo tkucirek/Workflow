@@ -372,7 +372,7 @@ public class Contract {
 		//System.out.println(variables);
 		System.out.println("Creating new contract entry");
 
-		long finalPrice=(long)test.getVariable("finalPrice");
+		long finalPriceperday=(long)test.getVariable("finalPriceperday");
 		String finalOfferType=(String) test.getVariable("finalOfferType");
 		double duration =contractEntity.getDuration();
 		long model=contractEntity.getVehicle_model();
@@ -392,7 +392,7 @@ public class Contract {
 
 			// insert values into the database
 			String insertStatement = "INSERT INTO Contract(Bvis_Id,Price,Coverage,Duration,Model,Number_Of_Vehicles) VALUES('"
-					+ BvisId + "','" + finalPrice + "','" + finalOfferType + "','" + duration + "','" + model + "','" + numberOfVehicle+"')";
+					+ BvisId + "','" + finalPriceperday + "','" + finalOfferType + "','" + duration + "','" + model + "','" + numberOfVehicle+"')";
 			PreparedStatement ps = connection.prepareStatement(insertStatement);
 			ps.executeUpdate();
 

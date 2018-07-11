@@ -34,7 +34,7 @@ public class ConfirmationServlet extends HttpServlet {
 		RuntimeService runtimeService = processEngine.getRuntimeService();
 		PrintWriter out = response.getWriter();
 		
-		long finalPrice = 0;
+		long finalPriceperday = 0;
 		
 
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -82,16 +82,23 @@ public class ConfirmationServlet extends HttpServlet {
 		}
 		
 		if(json.getLong("offer_id")== 2) {
-			finalPrice = (long)runtimeService.getVariable(process_Id, "fullPrice");
+			finalPriceperday = (long)runtimeService.getVariable(process_Id, "fullPrice");
 			offertype = "Full coverage";
 			
 		}else if (json.getLong("offer_id") == 1) {
-			finalPrice = (long) runtimeService.getVariable(process_Id, "semiPrice");
+			finalPriceperday = (long) runtimeService.getVariable(process_Id, "semiPrice");
 			offertype = "Semi coverage";
 		}
+		
+		double duration = (double) runtimeService.getVariable(process_Id, "rental_duration");
+		long number_of_vehicles = (long) runtimeService.getVariable(process_Id, "number_of_vehicles");
+		
+		long finalprice = (long) (finalPriceperday * duration * number_of_vehicles);
+		
 		map.put("customer_id", customer_id);
 		map.put("offer_id", offer_id);
-		map.put("finalPrice", finalPrice);
+		map.put("finalPriceperday", finalPriceperday);
+		map.put("finalprice", finalprice);
 		map.put("finalOfferType", offertype);
 		System.out.println("Der gewählte Versicherungstyp ist :" + offertype);
 		
