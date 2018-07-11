@@ -286,7 +286,7 @@ public class Claim {
 			}
 		}
 	
-	public void recordContract (DelegateExecution test) throws ClassNotFoundException {
+	public void recordClaim (DelegateExecution test) throws ClassNotFoundException {
 		
 		Class.forName("org.sqlite.JDBC");
 

@@ -70,7 +70,7 @@
       <bpmn:incoming>SequenceFlow_1wfkzot</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="SequenceFlow_1wfkzot" sourceRef="Task_1k8bp2j" targetRef="claim_finished_sucesfully" />
-    <bpmn:serviceTask id="Task_1k8bp2j" name="Record Contract" camunda:expression="${claim.recordContract(execution)}">
+    <bpmn:serviceTask id="Task_1k8bp2j" name="Record Claim" camunda:expression="${claim.recordClaim(execution)}">
       <bpmn:incoming>SequenceFlow_1fa1ohu</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1wfkzot</bpmn:outgoing>
     </bpmn:serviceTask>

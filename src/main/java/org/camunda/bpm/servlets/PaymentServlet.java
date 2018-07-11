@@ -72,10 +72,13 @@ public class PaymentServlet extends HttpServlet{
 		}
 		
 		
+		
+		
 		runtimeService.setVariable(process_Id, "money", money);
 		System.out.println(money);
 		
 		runtimeService.createMessageCorrelation("paymentRecieved").processInstanceId(process_Id).correlateWithResult();
+		
 
 	}
 }

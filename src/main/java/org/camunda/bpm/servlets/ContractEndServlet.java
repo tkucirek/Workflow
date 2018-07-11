@@ -74,9 +74,10 @@ public class ContractEndServlet extends HttpServlet{
 			}
 		}
 		
-		map.put("customer_id", customer_id);
+		map.put("process_id", process_Id);
 		
 		runtimeService.createMessageCorrelation("contractEnds").processInstanceId(process_Id).setVariables(map).correlateWithResult();
+		
 		System.out.println("The Contract with the ID " + process_Id + " has expired");
 		
 		
