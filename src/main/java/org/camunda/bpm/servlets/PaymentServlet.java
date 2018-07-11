@@ -19,38 +19,28 @@ import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.ProcessEngines;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.impl.util.json.JSONObject;
-import org.camunda.bpm.engine.runtime.MessageCorrelationResult;
-import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.main.Customize;
 
-public class ConfirmationServlet extends HttpServlet {
-	int finalPrice;
-	String offertype;
+public class PaymentServlet extends HttpServlet{
+	
 	String process_Id;
-
+	
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
+		
 		ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
 		RuntimeService runtimeService = processEngine.getRuntimeService();
 		PrintWriter out = response.getWriter();
 		
-		long finalPrice = 0;
 		
-
+		
 		Map<String, Object> map = new HashMap<String, Object>();
 		
-		
 		String jsonString = IOUtils.toString(request.getInputStream());
-
+		
 		JSONObject json = new JSONObject(jsonString); 
 		
 		String customer_id = String.valueOf(json.getString("customer_id")) ;
-		System.out.println("ID: " + customer_id);
-		String offer_id = String.valueOf(json.getLong("offer_id"));
-		System.out.println("OfferId: " + offer_id);
-		
-		//map.put("customer_id", customer_id);
-		//map.put("offer_id", offer_id);
+		double money = json.getDouble("money");
 		
 		try {
 			Class.forName("org.sqlite.JDBC");
@@ -67,7 +57,7 @@ public class ConfirmationServlet extends HttpServlet {
 			statement.setQueryTimeout(30);
 			ResultSet result = statement.executeQuery("SELECT Process_Id from Instance WHERE Bvis_Id='"+customer_id+"'");
 				 process_Id=result.getString("Process_Id");
-				 System.out.println("ProcessId" + process_Id);
+				 System.out.println("ProzessId: " + process_Id);
 		}
 		
 		catch (SQLException e) {
@@ -81,24 +71,8 @@ public class ConfirmationServlet extends HttpServlet {
 			}
 		}
 		
-		if(json.getLong("offer_id")== 2) {
-			finalPrice = (long)runtimeService.getVariable(process_Id, "fullPrice");
-			offertype = "Full coverage";
-			
-		}else if (json.getLong("offer_id") == 1) {
-			finalPrice = (long) runtimeService.getVariable(process_Id, "semiPrice");
-			offertype = "Semi coverage";
-		}
-		map.put("customer_id", customer_id);
-		map.put("offer_id", offer_id);
-		map.put("finalPrice", finalPrice);
-		map.put("finalOfferType", offertype);
-		System.out.println("Der gewählte Versicherungstyp ist :" + offertype);
 		
-		runtimeService.createMessageCorrelation("contractConfirmed").processInstanceId(process_Id).setVariables(map)
-		.correlateWithResult();
+		runtimeService.setVariable(process_Id, "money", money);
 
-		
-	
 	}
 }

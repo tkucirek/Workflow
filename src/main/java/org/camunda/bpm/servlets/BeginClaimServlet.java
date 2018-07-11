@@ -49,6 +49,7 @@ public class BeginClaimServlet extends HttpServlet {
 		
 		map.put("customer_id", customer_id);
 		map.put("damage_classification", damage_classification);
+		System.out.println("CustomerID: " + customer_id + " Damage Classification: " + damage_classification);
 		
 		ProcessInstance processInstance;
 		

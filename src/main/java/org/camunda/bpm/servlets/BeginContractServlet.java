@@ -157,6 +157,7 @@ public class BeginContractServlet extends HttpServlet {
 		
 		response.setContentType("application/json");
 		out.print(new JSONArray(offers));
+		System.out.println("Contract offers: " + offers);
 		
 		
 		out.close();

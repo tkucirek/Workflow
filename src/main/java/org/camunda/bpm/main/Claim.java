@@ -109,15 +109,12 @@ public class Claim {
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30); // set timeout to 30 sec.
 			
-			// set the transmitted information about the claim
-			long dbDamageClassification = claimEntity.getDamageClassification();
-			//long dbCustomerId = claimEntity.getCustomerId();
+			
 			
 			ResultSet resultmodel = statement.executeQuery("SELECT Model FROM Contract WHERE Bvis_Id = '" 
 					+ claimEntity.getCustomerId() + "'");
 			int model1 = resultmodel.getInt(1);
-			System.out.println(resultmodel.getInt(1));
-			System.out.println("mode l" + model1);
+			System.out.println("Model: " + model1);
 			ResultSet resultnumber = statement.executeQuery("SELECT Number_Of_Vehicles FROM Contract WHERE Bvis_Id = '" 
 					+ claimEntity.getCustomerId() + "'");
 			
@@ -129,7 +126,7 @@ public class Claim {
 			System.out.println("class " + claimEntity.getDamageClassification()*5);
 			System.out.println("number " + number1);
 			
-			System.out.println("damageamount " +damageamount);
+			System.out.println("Damageamount: " + damageamount);
 			
 			/*// write database entry
 			String insertStatement = "INSERT INTO Claim(Damage_Amount, Bvis_Id) VALUES('"
@@ -173,7 +170,7 @@ public class Claim {
 			
 			String coverage = result.getString("Coverage");
 			
-			System.out.println("Coverage " + coverage);
+			System.out.println("Coverage: " + coverage);
 			
 			test.setVariable("coverage", coverage);
 			
@@ -204,9 +201,8 @@ public class Claim {
 		String customer_id = claimEntity.getCustomerId();
 		
 		damage_Assessment = (long) test.getVariable("damage_Amount");
-		System.out.println("Coverage später: " + coverage);
 		long deductible_Amount;
-		if (coverage.equals("Halbkasko") ) {
+		if (coverage.equals("Semi coverage") ) {
 			deductible_Amount = (long) test.getVariable("damage_Amount") /2;
 		}else {
 			deductible_Amount = 0;
@@ -244,7 +240,7 @@ public class Claim {
 		//long deductible_Amount = (long) test.getVariable("damage_Amount") - damage_Assessment;
 		
 		test.setVariable("deductible_Amount", deductible_Amount);
-		System.out.println("Deductible Amount " + deductible_Amount);
+		System.out.println("Deductible Amount: " + deductible_Amount);
 		
 	}
 
@@ -266,9 +262,9 @@ public class Claim {
 			ResultSet result = statement.executeQuery("SELECT Number_Of_Claims from Customer WHERE Bvis_Id= '" + customer_id + "'");
 			
 			int claimNumber = result.getInt("Number_Of_Claims");
-			System.out.println("old number of claims:"+claimNumber);
-			claimNumber =claimNumber +1;
-			System.out.println("new number of claims:"+claimNumber);
+			System.out.println("Old number of claims: " + claimNumber);
+			claimNumber = claimNumber +1;
+			System.out.println("New number of claims: " + claimNumber);
 			String insertStatement = "UPDATE Customer SET Number_Of_Claims ="+ claimNumber +" WHERE Bvis_Id= '" + customer_id + "'";
 			PreparedStatement ps = connection.prepareStatement(insertStatement);
 			ps.executeUpdate();
@@ -296,7 +292,6 @@ public class Claim {
 
 		Connection connection = null;
 		try {
-			System.out.println("Databasepath: " + Customize.databasepath);
 			// create a database connection
 			connection = DriverManager.getConnection(Customize.databasepath);
 			System.out.println("Databasepath : " + Customize.databasepath);
@@ -305,7 +300,7 @@ public class Claim {
 			
 			String insertStatement = "INSERT INTO Claim(Damage_Amount, Bvis_Id, Deductible_Amount) VALUES('"
 					+ test.getVariable("damage_Amount") + "','" + claimEntity.getCustomerId() + "','" + test.getVariable("deductible_Amount") +"')";
-			System.out.println(claimEntity.getCustomerId());
+			System.out.println("ID: " + claimEntity.getCustomerId());
 			PreparedStatement ps = connection.prepareStatement(insertStatement);
 			ps.executeUpdate();
 		
