@@ -27,7 +27,7 @@ import org.camunda.bpm.engine.ProcessEngines;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.impl.util.json.JSONObject;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
-import org.camunda.bpm.main.Customize;
+import org.camunda.bpm.main.Databasepath;
 import org.camunda.bpm.messages.InsuranceOffering;
 
 

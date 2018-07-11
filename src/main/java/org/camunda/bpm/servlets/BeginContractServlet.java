@@ -27,7 +27,7 @@ import org.camunda.bpm.engine.impl.util.json.JSONArray;
 import org.camunda.bpm.engine.impl.util.json.JSONObject;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.entities.OfferEntity;
-import org.camunda.bpm.main.Customize;
+import org.camunda.bpm.main.Databasepath;
 import org.camunda.bpm.messages.InsuranceOffering;
 
 
@@ -114,7 +114,7 @@ public class BeginContractServlet extends HttpServlet {
 		Connection connection = null;
 		try {
 			// create a database connection
-			connection = DriverManager.getConnection(Customize.databasepath);
+			connection = DriverManager.getConnection(Databasepath.databasepath);
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30);
 

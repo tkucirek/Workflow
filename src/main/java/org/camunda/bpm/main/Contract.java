@@ -157,7 +157,7 @@ public class Contract {
 
 		Connection connection = null;
 		try {
-			connection = DriverManager.getConnection(Customize.databasepath);
+			connection = DriverManager.getConnection(Databasepath.databasepath);
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30);
 
@@ -196,7 +196,7 @@ public class Contract {
 		Class.forName("org.sqlite.JDBC");
 		Connection connection = null;
 		try {
-			connection = DriverManager.getConnection(Customize.databasepath);
+			connection = DriverManager.getConnection(Databasepath.databasepath);
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30);
 
@@ -386,7 +386,7 @@ public class Contract {
 		Class.forName("org.sqlite.JDBC");
 		Connection connection = null;
 		try {
-			connection = DriverManager.getConnection(Customize.databasepath);
+			connection = DriverManager.getConnection(Databasepath.databasepath);
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30);
 

@@ -110,10 +110,10 @@ public class Claim {
 
 		Connection connection = null;
 		try {
-			System.out.println("Databasepath: " + Customize.databasepath);
+			System.out.println("Databasepath: " + Databasepath.databasepath);
 			// create a database connection
-			connection = DriverManager.getConnection(Customize.databasepath);
-			System.out.println("Databasepath : " + Customize.databasepath);
+			connection = DriverManager.getConnection(Databasepath.databasepath);
+			System.out.println("Databasepath : " + Databasepath.databasepath);
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30); // set timeout to 30 sec.
 			
@@ -166,7 +166,7 @@ public class Claim {
 		
 		try {
 			// create a database connection
-			connection = DriverManager.getConnection(Customize.databasepath);
+			connection = DriverManager.getConnection(Databasepath.databasepath);
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30);
 
@@ -221,7 +221,7 @@ public class Claim {
 		
 		try {
 			// create a database connection
-			connection = DriverManager.getConnection(Customize.databasepath);
+			connection = DriverManager.getConnection(Databasepath.databasepath);
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30);
 
@@ -262,7 +262,7 @@ public class Claim {
 		
 		try {
 			// create a database connection
-			connection = DriverManager.getConnection(Customize.databasepath);
+			connection = DriverManager.getConnection(Databasepath.databasepath);
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30);
 
@@ -306,8 +306,8 @@ public class Claim {
 		Connection connection = null;
 		try {
 			// create a database connection
-			connection = DriverManager.getConnection(Customize.databasepath);
-			System.out.println("Databasepath : " + Customize.databasepath);
+			connection = DriverManager.getConnection(Databasepath.databasepath);
+			System.out.println("Databasepath : " + Databasepath.databasepath);
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30); // set timeout to 30 sec.
 			
