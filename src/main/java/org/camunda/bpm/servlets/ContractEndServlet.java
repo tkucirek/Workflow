@@ -47,7 +47,7 @@ public class ContractEndServlet extends HttpServlet{
 		JSONObject json = new JSONObject(jsonString); 
 		
 		String customer_id = String.valueOf(json.getString("customer_id")) ;
-		System.out.println("The contract from the customer with ID " + customer_id + "will now end");
+		System.out.println("The contract from the customer with ID " + customer_id + " will now end");
 	
 		try {
 			Class.forName("org.sqlite.JDBC");

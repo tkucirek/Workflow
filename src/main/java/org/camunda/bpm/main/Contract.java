@@ -163,7 +163,6 @@ public class Contract {
 
 			ResultSet result = statement.executeQuery("SELECT * from Customer;");
 			while (result.next()) {
-				System.out.println("Check whether customer with name: " + result.getString("Bvis_Id") + "exists.");
 				if (BvisId.equals(result.getString("Bvis_Id"))) {
 					System.out.println("Customer already exists in capitol's customer-database");
 					customerExists = true;
@@ -352,8 +351,8 @@ public class Contract {
 
 		long fullCoveragePrice = price * 3;
 		long semiCoveragePrice = price * 2;
-		System.out.println("The daily price for model" + model + "with a full coverage is:" + fullCoveragePrice);
-		System.out.println("The daily price for model" + model + "with a semi coverage is:" + semiCoveragePrice);
+		System.out.println("The daily price for model " + model + " with a full coverage is:" + fullCoveragePrice);
+		System.out.println("The daily price for model " + model + " with a semi coverage is:" + semiCoveragePrice);
 		test.setVariable("fullPrice", fullCoveragePrice);
 		test.setVariable("semiPrice", semiCoveragePrice);
 

@@ -71,7 +71,7 @@ public class ConfirmationServlet extends HttpServlet {
 			statement.setQueryTimeout(30);
 			ResultSet result = statement.executeQuery("SELECT Process_Id from Instance WHERE Bvis_Id='"+customer_id+"'");
 				 process_Id=result.getString("Process_Id");
-				 System.out.println("Confirmed ProcessId" + process_Id);
+				 System.out.println("Confirmed ProcessId: " + process_Id);
 		}
 		
 		catch (SQLException e) {

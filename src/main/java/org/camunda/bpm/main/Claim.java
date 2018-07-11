@@ -172,7 +172,7 @@ public class Claim {
 			
 			String coverage = result.getString("Coverage");
 			
-			System.out.println("The coverage for the customer with the ID: " + customer_id + "is " + coverage);
+			System.out.println("The coverage for the customer with the ID: " + customer_id + " is " + coverage);
 			
 			test.setVariable("coverage", coverage);
 			

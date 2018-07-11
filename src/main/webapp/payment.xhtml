@@ -29,15 +29,18 @@
           
                     <div class="col-md-6">
                     
-                    
+                     <img src="logo.png" alt="Capitol logo" height="200" width="400" /> 
                      <h3> A new payment has arrived! Please confirm that the payment matches the required amount. </h3>
                      <p><label>Contract details:</label></p>
                      
-                     <!-- Panel Grid to list all the Businesscustomer details -->
+
                      <b:panelGrid col-spans="5,7" cellpadding="5">
                    
                       <h:outputLabel  value="Customer ID:"/>
            			  <p> #{processVariables['BvisId']}</p> 
+           			  
+           			  <h:outputLabel  value="Customer name:"/>
+           			  <p> #{processVariables['name']}</p> 
                      
                       <h:outputLabel  value="Money recieved:"/>
            			  <p> #{processVariables['money']}</p> 
@@ -51,6 +54,8 @@
                       
                     <h:commandButton id="submit_button" value="Confirm payment" action="#{camundaTaskForm.completeTask()}" />
                     
+                    
+                    <img src="stromberg.jpg" alt="Capitol logo" height="120" width="240" /> 
                     </div>
                   </div>	
          </div>   
