@@ -14,54 +14,39 @@ public class InsuranceOffering implements JavaDelegate {
 	private String jsonInString;
 	private String jsonInString2;
 	
+	/**
+	 * Creates two new offers (semi- and full coverage) based on the committed input variables.
+	 * The offer-objects are then mapped into a json- String.
+	 * @param test
+	 * @throws Exception
+	 */
+	
 	public void execute(DelegateExecution test) throws Exception {
-	System.out.println("hole bvis id");
-	String bvisId =  (String) test.getVariable("BvisId");
-	System.out.println("hole contract");
 	long fullPrice=(long) test.getVariable("fullPrice");
 	long semiPrice=(long) test.getVariable("semiPrice");
-	
-	//ContractEntity contract = (ContractEntity) test.getVariable("contractEntity");
-	//System.out.println("hole name");
-	//String customerName=((String) test.getVariable("name"));
-	//String processId = test.getProcessInstanceId();
 
-	// Generate ContractOfferEntity to send to the partner
-	System.out.println("erstelle neue entitiy");
 	OfferEntity offerEntityFull = new OfferEntity();
 	offerEntityFull.setOffer_Id(2);
-	//offerEntityFull.setCustomerId(bvisId);
 	offerEntityFull.setPrice(fullPrice);
 	offerEntityFull.setName("Full coverage");
-	offerEntityFull.setDescription("Full coverage: All damages get compensated.");
+	offerEntityFull.setDescription("We cover the total damage amount - you only have to pay the claim-service fee");
 	
 	OfferEntity offerEntitySemi = new OfferEntity();
 	offerEntitySemi.setOffer_Id(1);
-	//offerEntitySemi.setCustomerId(bvisId);
 	offerEntitySemi.setPrice(semiPrice);
 	offerEntitySemi.setName("Semi coverage");
-	offerEntitySemi.setDescription("Semi coverage: Half of the damageamount get compensated.");
+	offerEntitySemi.setDescription("We cover halft of the total damage amount - you will have to pay the other half plus the claim-service fee");
 
-	// Give output to the user
-	System.out.println("Offertid: " + offerEntityFull.getOffer_Id());
-	System.out.println("Price: " + offerEntityFull.getPrice());
-	//System.out.println("BvisId: " + offerEntityFull.getCustomerId());
-	System.out.println("Description: " + offerEntityFull.getDescription());
-	//System.out.println("name: " + offerEntityFull.getCustomerName());
-	//System.out.println(customerName);
-
-	// Convert the contractOfferEntity to a string representing a json
-	// object
 	ObjectMapper mapper = new ObjectMapper();
 	jsonInString = mapper.writeValueAsString(offerEntityFull);
 	
-	System.out.println("Contractoffer send to the partner: " + jsonInString);
+	System.out.println("Contractoffer for full coverage send to the partner: " + jsonInString);
 	
 	
 	
 	ObjectMapper mapper2 = new ObjectMapper();
 	jsonInString2 = mapper2.writeValueAsString(offerEntitySemi);
-	System.out.println("Contractoffer send to the partner: " + jsonInString2);
+	System.out.println("Contractoffer for semi coverage send to the partner: " + jsonInString2);
 	
 	test.setVariable("offerhalf", offerEntitySemi);
 	test.setVariable("offerfull", offerEntityFull);
