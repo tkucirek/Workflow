@@ -21,7 +21,7 @@ import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.impl.util.json.JSONObject;
 import org.camunda.bpm.engine.runtime.MessageCorrelationResult;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
-import org.camunda.bpm.main.Customize;
+import org.camunda.bpm.main.Databasepath;
 
 
 /**
@@ -49,9 +49,9 @@ public class ConfirmationServlet extends HttpServlet {
 		JSONObject json = new JSONObject(jsonString); 
 		
 		String customer_id = String.valueOf(json.getString("customer_id")) ;
-		System.out.println("ID: " + customer_id);
+		System.out.println("Confirmed CustomerID: " + customer_id);
 		String offer_id = String.valueOf(json.getLong("offer_id"));
-		System.out.println("OfferId: " + offer_id);
+		System.out.println("Confirmed OfferId: " + offer_id);
 		
 		//map.put("customer_id", customer_id);
 		//map.put("offer_id", offer_id);
@@ -66,12 +66,12 @@ public class ConfirmationServlet extends HttpServlet {
 		Connection connection = null;
 		try {
 			// create a database connection
-			connection = DriverManager.getConnection(Customize.databasepath);
+			connection = DriverManager.getConnection(Databasepath.databasepath);
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30);
 			ResultSet result = statement.executeQuery("SELECT Process_Id from Instance WHERE Bvis_Id='"+customer_id+"'");
 				 process_Id=result.getString("Process_Id");
-				 System.out.println("ProcessId" + process_Id);
+				 System.out.println("Confirmed ProcessId" + process_Id);
 		}
 		
 		catch (SQLException e) {
@@ -104,7 +104,7 @@ public class ConfirmationServlet extends HttpServlet {
 		map.put("finalPriceperday", finalPriceperday);
 		map.put("finalprice", finalprice);
 		map.put("finalOfferType", offertype);
-		System.out.println("Der gewählte Versicherungstyp ist :" + offertype);
+		System.out.println("The chosen and confirmed Insurancetype is: " + offertype);
 		
 		runtimeService.createMessageCorrelation("contractConfirmed").processInstanceId(process_Id).setVariables(map)
 		.correlateWithResult();

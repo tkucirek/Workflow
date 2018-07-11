@@ -27,7 +27,7 @@ import org.camunda.bpm.engine.ProcessEngines;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.impl.util.json.JSONObject;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
-import org.camunda.bpm.main.Customize;
+import org.camunda.bpm.main.Databasepath;
 import org.camunda.bpm.messages.InsuranceOffering;
 
 
@@ -57,17 +57,17 @@ public class BeginClaimServlet extends HttpServlet {
 		
 		map.put("customer_id", customer_id);
 		map.put("damage_classification", damage_classification);
-		System.out.println("CustomerID: " + customer_id + " Damage Classification: " + damage_classification);
+		System.out.println("CustomerID: " + customer_id + "Damage Classification: " + damage_classification + "at the beginning of the Claim Process");
 		
 		ProcessInstance processInstance;
 		
 		processInstance = runtimeService.startProcessInstanceByMessage("instantiationMessageClaim", map);
-		String prozessid = processInstance.getId();
+		//String prozessid = processInstance.getId();
 		
-		//String deductible_Amount = (String) runtimeService.getVariable(prozessid, "deductible_Amount");
+
 		
 		
-		out.print("ok");
+		out.print("Claim Process started.");
 		
 		
 }

@@ -19,7 +19,7 @@ import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.ProcessEngines;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.impl.util.json.JSONObject;
-import org.camunda.bpm.main.Customize;
+import org.camunda.bpm.main.Databasepath;
 
 
 /**
@@ -45,6 +45,7 @@ public class PaymentServlet extends HttpServlet{
 		
 		String customer_id = String.valueOf(json.getString("customer_id")) ;
 		double money = json.getDouble("money");
+		System.out.println("Recieved " + money + "€");
 		
 		try {
 			Class.forName("org.sqlite.JDBC");
@@ -56,12 +57,12 @@ public class PaymentServlet extends HttpServlet{
 		Connection connection = null;
 		try {
 			// create a database connection
-			connection = DriverManager.getConnection(Customize.databasepath);
+			connection = DriverManager.getConnection(Databasepath.databasepath);
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30);
 			ResultSet result = statement.executeQuery("SELECT Process_Id from Instance WHERE Bvis_Id='"+customer_id+"'");
 				 process_Id=result.getString("Process_Id");
-				 System.out.println("PaymentProzessId: " + process_Id);
+				 System.out.println("PaymentProcessId: " + process_Id);
 		}
 		
 		catch (SQLException e) {
@@ -79,10 +80,9 @@ public class PaymentServlet extends HttpServlet{
 		
 		
 		runtimeService.setVariable(process_Id, "money", money);
-		System.out.println(money);
 		
 		runtimeService.createMessageCorrelation("paymentRecieved").processInstanceId(process_Id).correlateWithResult();
-		
+		System.out.println("Please manually confirm the payment");
 
 	}
 }

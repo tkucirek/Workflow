@@ -27,7 +27,7 @@ import org.camunda.bpm.engine.impl.util.json.JSONArray;
 import org.camunda.bpm.engine.impl.util.json.JSONObject;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.entities.OfferEntity;
-import org.camunda.bpm.main.Customize;
+import org.camunda.bpm.main.Databasepath;
 import org.camunda.bpm.messages.InsuranceOffering;
 
 
@@ -68,7 +68,7 @@ public class BeginContractServlet extends HttpServlet {
 		String mail = json.getString("e_mail");
 		String address = json.getString("address");
 		
-		System.out.println(json);
+		//System.out.println(json);
 		
 		map.put("name", name);
 		map.put("BvisId", customer_id);
@@ -82,18 +82,7 @@ public class BeginContractServlet extends HttpServlet {
 		map.put("address", address);
 		
 		
-		System.out.println(map);
-		
-
-		/*JSONObject jsonObj = new JSONObject(request.getParameter("jsonObj"));
-
-		String name = (String) request.getParameter("name");
-		
-		System.out.println(request.getParameter("name"));
-		map.put("name", name);
-		
-		System.out.println(map.get(name));
-		*/
+		System.out.println("The customer requirements are: " + map);
 		
 		
 		
@@ -103,6 +92,7 @@ public class BeginContractServlet extends HttpServlet {
 		String prozessid = processInstance.getId();
 		runtimeService.setVariable(prozessid, "prozessid", prozessid);
 		neueprozessid = prozessid;
+		System.out.println("The processid is: " + prozessid);
 		
 		try {
 			Class.forName("org.sqlite.JDBC");
@@ -114,7 +104,7 @@ public class BeginContractServlet extends HttpServlet {
 		Connection connection = null;
 		try {
 			// create a database connection
-			connection = DriverManager.getConnection(Customize.databasepath);
+			connection = DriverManager.getConnection(Databasepath.databasepath);
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30);
 
@@ -138,12 +128,6 @@ public class BeginContractServlet extends HttpServlet {
 			}
 		}
 		
-		/*try {
-			wait(20);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
 		
 		OfferEntity offerhalf = (OfferEntity) runtimeService.getVariable(prozessid, "offerhalf");
 		OfferEntity offerfull = (OfferEntity) runtimeService.getVariable(prozessid, "offerfull");

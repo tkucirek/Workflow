@@ -61,6 +61,10 @@ public class Contract {
 		}
 	}
 	
+	/**
+	 * Persists the contract instance.
+	 * @param test
+	 */
 
 	public void persistContract(DelegateExecution test) {
 
@@ -109,7 +113,6 @@ public class Contract {
 	}
 
 	public CustomerEntity getCustomer(String customerId) {
-		// Load customer entity from database
 		if (customerIsPrivate == 1) {
 			return entityManager.find(PrivateCustomer.class, customerId);
 		} else
@@ -121,18 +124,19 @@ public class Contract {
 	}
 
 	public ContractEntity getContract(Long contractId) {
-		// Load contract entity from database
 		return entityManager.find(ContractEntity.class, contractId);
 	}
 	public ContractEntity getContractEntity() {
 
 		return this.contractEntity;
 	}
+	
+	/**
+	 * Creates the contract as a ContractEntity.
+	 * @param variables
+	 */
 	public void createContract(Map<String, Object> variables, DelegateExecution test) {
-		// Create new contract instance
 		this.setContractEntity(new ContractEntity());
-		
-		// Set contract attributes
 		contractEntity.setCustomerId(BvisId);
 		contractEntity.setCustomerName(name);
 		contractEntity.setDuration(Long.valueOf((String) variables.get("rental_duration"))*0.0000000115741);
@@ -141,18 +145,19 @@ public class Contract {
 		
 	}
 
+	/**
+	 * Checks whether the customer id already exists in our database
+	 * @param test
+	 * @throws ClassNotFoundException
+	 */
 	public void compareToDatabase(DelegateExecution test) throws ClassNotFoundException {
-		System.out.println("User is now compared to the database");
-
-		Map<String, Object> variables = test.getVariables();
 		boolean customerExists = false;
 
 		Class.forName("org.sqlite.JDBC");
 
 		Connection connection = null;
 		try {
-			// create a database connection
-			connection = DriverManager.getConnection(Customize.databasepath);
+			connection = DriverManager.getConnection(Databasepath.databasepath);
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30);
 
@@ -160,7 +165,7 @@ public class Contract {
 			while (result.next()) {
 				System.out.println("Check whether customer with name: " + result.getString("Bvis_Id") + "exists.");
 				if (BvisId.equals(result.getString("Bvis_Id"))) {
-					System.out.println("Customer already exists in database");
+					System.out.println("Customer already exists in capitol's customer-database");
 					customerExists = true;
 				}
 			}
@@ -181,44 +186,37 @@ public class Contract {
 		test.setVariable("customerExists", customerExists);
 	}
 
+	/**
+	 * Creates a new customer entry in the customer database and in the corresponding sub-database (PrivateCustomer or FirmCustomer).
+	 * @param test
+	 * @throws ClassNotFoundException
+	 */
 	public void createNewEntry(DelegateExecution test) throws ClassNotFoundException {
-		System.out.println("Creating new user entry");
-
-		Map<String, Object> variables = test.getVariables();
-		boolean customerExists = false;
 
 		Class.forName("org.sqlite.JDBC");
 		Connection connection = null;
 		try {
-			// create a database connection
-			connection = DriverManager.getConnection(Customize.databasepath);
+			connection = DriverManager.getConnection(Databasepath.databasepath);
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30);
 
 			String dbname = (customerEntity).getName();
 			int dbNumberOfClaims = 0;
-
-			// set the information from the customerEntity
-
-			// insert values into the database
+			System.out.println("Creating new customer entry in the customer database");
 			String insertStatement = "INSERT INTO Customer(Bvis_Id,Name,Number_Of_Claims,Private_Customer,Address,Phone,Mail) VALUES('"
 					+ BvisId + "','" + dbname + "','" + dbNumberOfClaims + "','" + customerIsPrivate + "','" + address + "','"  + phone  +"','" + mail+"')";
 			PreparedStatement ps = connection.prepareStatement(insertStatement);
 			ps.executeUpdate();
 
-			// get the id of the just created customer (largest Id because of
-			// auto increment)
-			//ResultSet rs_current = statement.executeQuery(
-				//	"SELECT Bvis_Id FROM Customer WHERE Capitol_Id = (SELECT MAX(Capitol_Id) FROM Customer)");
-			//int dbCustomerId = rs_current.getInt("Bvis_Id");
 			if (customerIsPrivate == 1) {
 				String dbbirthday = ((PrivateCustomer) customerEntity).getDateOfBirth();
-
+				System.out.println("Creating new customer entry in the private-customer database");
 				String insertStatement2 = "INSERT INTO PrivateCustomer(Bvis_Id,Birthday,Name) VALUES('" + BvisId
 						+ "','" + dbbirthday + "','" + dbname + "')";
 				PreparedStatement ps2 = connection.prepareStatement(insertStatement2);
 				ps2.executeUpdate();
 			} else if (customerIsPrivate == 0) {
+				System.out.println("Creating new customer entry in the firm-customer database");
 				String insertStatement3 = "INSERT INTO FirmCustomer(Bvis_Id,Company_Name) VALUES('" + BvisId
 						+ "','" + dbname + "')";
 				PreparedStatement ps3 = connection.prepareStatement(insertStatement3);
@@ -226,7 +224,7 @@ public class Contract {
 
 			}
 
-			System.out.println("Customer entry has been created.");
+			System.out.println("Customer entries have been added.");
 
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
@@ -239,9 +237,13 @@ public class Contract {
 			}
 		}
 
-		// System.out.println("The current contractId is " + dbContractId + ".");
 	}
-
+	/**
+	 * Assigns the private customer to an insurance class based on his age.
+	 * Business customers are simply assigned to a business class.
+	 * @param test
+	 * @throws ParseException
+	 */
 	public void evaluateCustomer(DelegateExecution test) throws ParseException {
 		String insuranceClass = null;
 		int age;
@@ -286,16 +288,20 @@ public class Contract {
 		} else if (customerIsPrivate == 0) {
 			insuranceClass = "Business";
 		}
+		System.out.println("Insurance class of the customer is " + insuranceClass);
 		test.setVariable("insurance class", insuranceClass);
 	}
+	/**
+	 * Calculates the daily rental costs for private customers based on their insurance class and the rented car-model.
+	 * Business customers pay the same amount for all models.
+	 * @param test
+	 */
 
 	public void calculatePremium(DelegateExecution test) {
 		long price = 0;
 		Map<String, Object> variables = test.getVariables();
-		double duration =contractEntity.getDuration();
 		String insuranceClass = (String) variables.get("insurance class");
 		long model =contractEntity.getVehicle_model();
-		long numberOfVehicles=contractEntity.getNumber_of_vehicles();
 
 		if (insuranceClass.equals("A") & model == 1) {
 			price = 15;
@@ -343,20 +349,20 @@ public class Contract {
 			price = 40;
 		} else if (insuranceClass.equals("Business"))
 			price = 20; // model does not matter for business customers
-		price = price;
-		System.out.println(" Preis für Modell "+model+" für Zeitraum von "+duration+" Tage und anzahl "+numberOfVehicles+" ist "+price);
 
 		long fullCoveragePrice = price * 3;
 		long semiCoveragePrice = price * 2;
-		System.out.println(fullCoveragePrice);
-		System.out.println(semiCoveragePrice);
+		System.out.println("The daily price for model" + model + "with a full coverage is:" + fullCoveragePrice);
+		System.out.println("The daily price for model" + model + "with a semi coverage is:" + semiCoveragePrice);
 		test.setVariable("fullPrice", fullCoveragePrice);
 		test.setVariable("semiPrice", semiCoveragePrice);
 
 	}
-
+	/**
+	 * Creates a new insuranceOffering instance and also transmits the delegateExecution parameter.
+	 * @param test
+	 */
 	public void sendInsuranceOffering(DelegateExecution test) {
-		System.out.println("starte offer");
 		insuranceOffering = new InsuranceOffering();
 
 		try {
@@ -365,32 +371,25 @@ public class Contract {
 			e.printStackTrace();
 		}
 	}
-
+	/**
+	 * Records the contract in our database.
+	 * @param test
+	 * @throws ClassNotFoundException
+	 */
 	public void recordContract(DelegateExecution test) throws ClassNotFoundException {
-		
-		//Map<String, Object> variables = test.getVariables();
-		//System.out.println(variables);
-		System.out.println("Creating new contract entry");
-
+		System.out.println("Recording the contract in the contract database.");
 		long finalPriceperday=(long)test.getVariable("finalPriceperday");
 		String finalOfferType=(String) test.getVariable("finalOfferType");
 		double duration =contractEntity.getDuration();
 		long model=contractEntity.getVehicle_model();
 		long numberOfVehicle =contractEntity.getNumber_of_vehicles();
-		//contractEntity.setContractType(finalOfferType);
-		//contractEntity.setPrice(finalPrice);
 		Class.forName("org.sqlite.JDBC");
 		Connection connection = null;
 		try {
-			// create a database connection
-			connection = DriverManager.getConnection(Customize.databasepath);
+			connection = DriverManager.getConnection(Databasepath.databasepath);
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30);
-			
 
-			// set the information from the customerEntity
-
-			// insert values into the database
 			String insertStatement = "INSERT INTO Contract(Bvis_Id,Price,Coverage,Duration,Model,Number_Of_Vehicles) VALUES('"
 					+ BvisId + "','" + finalPriceperday + "','" + finalOfferType + "','" + duration + "','" + model + "','" + numberOfVehicle+"')";
 			PreparedStatement ps = connection.prepareStatement(insertStatement);
