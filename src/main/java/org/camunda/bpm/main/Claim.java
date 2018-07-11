@@ -51,11 +51,15 @@ public class Claim {
 			}
 
 		}
-
+		
+		/**
+		 * Persists the claim instance
+		 * @param test
+		 */
 	public void persistClaim (DelegateExecution test) {
 		// Get all process variables
-				Map<String, Object> variables = test.getVariables();
-				//int customerId = (int) variables.get("customer_Id");
+		Map<String, Object> variables = test.getVariables();
+				
 				
 		createClaim(variables);
 		
@@ -84,10 +88,9 @@ public class Claim {
 	}
 	
 	/**
-	 * Creates the claim entity
+	 * Creates the claim as a ClaimEntity
 	 * @param variables
 	 */
-	@SuppressWarnings("unchecked")
 	public void createClaim(Map<String, Object> variables) {
 		// Create new contract instance
 		this.setClaimEntity(new ClaimEntity());
@@ -97,6 +100,11 @@ public class Claim {
 		
 	}
 	
+	/**
+	 * Evaluates the damages and calculates the damage amount
+	 * @param test
+	 * @throws ClassNotFoundException
+	 */
 	public void checkDamage (DelegateExecution test) throws ClassNotFoundException{
 		Class.forName("org.sqlite.JDBC");
 
@@ -128,14 +136,6 @@ public class Claim {
 			
 			System.out.println("Damageamount: " + damageamount);
 			
-			/*// write database entry
-			String insertStatement = "INSERT INTO Claim(Damage_Amount, Bvis_Id) VALUES('"
-					+ damageamount + "','" + claimEntity.getCustomerId() + "')";
-			System.out.println(claimEntity.getCustomerId());
-			PreparedStatement ps = connection.prepareStatement(insertStatement);
-			ps.executeUpdate();*/
-
-			//System.out.println("The claim should now be recorded in capitol.db");
 
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
@@ -151,7 +151,11 @@ public class Claim {
 		test.setVariable("damage_Amount", damageamount);
 	}
 
-	
+	/**
+	 * Crosschecks the contractid of the claim with our contract database to determine the coverage
+	 * @param test
+	 * @throws ClassNotFoundException
+	 */
 	public void CrossCheckWithContract (DelegateExecution test) throws ClassNotFoundException {
 		
 		Class.forName("org.sqlite.JDBC");
@@ -192,6 +196,11 @@ public class Claim {
 		
 	
 	}
+	
+	/**
+	 * Determines the deductible amount that the customer has to pay
+	 * @param test
+	 */
 	public void DetermineDeductibleAmount (DelegateExecution test) {
 		
 		
@@ -216,10 +225,6 @@ public class Claim {
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30);
 
-			/*String insertStatement = "UPDATE Claim SET Deductible_Amount ="+ deductible_Amount +" WHERE Bvis_Id= '" + customer_id + "'";
-			PreparedStatement ps = connection.prepareStatement(insertStatement);
-			ps.executeUpdate();*/
-
 				
 			
 		}
@@ -237,14 +242,16 @@ public class Claim {
 		
 		System.out.println("Damage Assessment: " + damage_Assessment);
 		
-		//long deductible_Amount = (long) test.getVariable("damage_Amount") - damage_Assessment;
-		
 		test.setVariable("deductible_Amount", deductible_Amount);
 		System.out.println("Deductible Amount: " + deductible_Amount);
 		
 	}
 
-	
+	/**
+	 * Adjusts the number of claims for the customer
+	 * @param test
+	 * @throws ClassNotFoundException
+	 */
 	public void AdjustCustomer (DelegateExecution test) throws ClassNotFoundException {
 		
 		Class.forName("org.sqlite.JDBC");
@@ -286,6 +293,12 @@ public class Claim {
 			}
 		}
 	
+	
+	/**
+	 * Records the claim in our database.
+	 * @param test
+	 * @throws ClassNotFoundException
+	 */
 	public void recordClaim (DelegateExecution test) throws ClassNotFoundException {
 		
 		Class.forName("org.sqlite.JDBC");

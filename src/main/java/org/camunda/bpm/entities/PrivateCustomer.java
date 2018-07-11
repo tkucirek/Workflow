@@ -2,6 +2,11 @@ package org.camunda.bpm.entities;
 
 import javax.persistence.Entity;
 
+
+
+/**
+ * @author Capitol Template for the PrivateCustomerEntity.
+ */
 @Entity
 public class PrivateCustomer extends  CustomerEntity {
 

@@ -7,6 +7,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Version;
 
+
+/**
+ * @author Capitol Template for the ContractEntity.
+ */
 @Entity
 public class ContractEntity implements Serializable {
 	

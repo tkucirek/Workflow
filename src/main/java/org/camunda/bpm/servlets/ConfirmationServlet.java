@@ -23,6 +23,10 @@ import org.camunda.bpm.engine.runtime.MessageCorrelationResult;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.main.Customize;
 
+
+/**
+ * @author Capitol Recieves the confirmation for the chosen contract and saves the determined price.
+ */
 public class ConfirmationServlet extends HttpServlet {
 	int finalPrice;
 	String offertype;

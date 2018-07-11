@@ -21,6 +21,10 @@ import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.impl.util.json.JSONObject;
 import org.camunda.bpm.main.Customize;
 
+
+/**
+ * @author Capitol Recieves the payment and concludes our process.
+ */
 public class PaymentServlet extends HttpServlet{
 	
 	String process_Id;

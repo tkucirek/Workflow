@@ -6,6 +6,11 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+
+
+/**
+ * @author Capitol Template for the CustomerRequirementsEntity.
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CustomerRequirements {
 

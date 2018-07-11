@@ -5,6 +5,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 
+/**
+ * @author Capitol Template for the OfferEntity.
+ */
 @Entity
 public class OfferEntity {
 	@Id

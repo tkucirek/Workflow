@@ -1,6 +1,9 @@
 package org.camunda.bpm.servlets;
 
 import java.io.IOException;
+
+
+
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -26,6 +29,11 @@ import org.camunda.bpm.engine.impl.util.json.JSONObject;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.main.Customize;
 import org.camunda.bpm.messages.InsuranceOffering;
+
+
+/**
+ * @author Capitol Recieves the necessary information from Bvis and starts a new claim instance at the address ".../contract-process/BeginClaimServlet"
+ */
 
 public class BeginClaimServlet extends HttpServlet {
 	

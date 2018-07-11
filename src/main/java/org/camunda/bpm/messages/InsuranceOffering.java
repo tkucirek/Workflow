@@ -7,6 +7,8 @@ import org.camunda.bpm.entities.OfferEntity;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+
+
 public class InsuranceOffering implements JavaDelegate {
 	
 	private String jsonInString;

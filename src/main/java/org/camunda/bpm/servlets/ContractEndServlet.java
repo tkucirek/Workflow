@@ -22,6 +22,10 @@ import org.camunda.bpm.engine.impl.util.json.JSONObject;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.main.Customize;
 
+
+/**
+ * @author Capitol Recieves the signal, that the contract has ended and responds with the corresponding payment information.
+ */
 public class ContractEndServlet extends HttpServlet{
 	
 	String process_Id;

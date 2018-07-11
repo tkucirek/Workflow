@@ -8,6 +8,9 @@ import javax.persistence.Id;
 import javax.persistence.Version;
 
 
+/**
+ * @author Capitol Template for the ClaimEntity.
+ */
 @Entity
 public class ClaimEntity implements Serializable{
 	

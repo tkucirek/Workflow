@@ -30,6 +30,13 @@ import org.camunda.bpm.entities.OfferEntity;
 import org.camunda.bpm.main.Customize;
 import org.camunda.bpm.messages.InsuranceOffering;
 
+
+
+
+/**
+ * @author Capitol Recieves the necessary information from Bvis and starts a new contract instance at the address ".../contract-process/BeginContractServlet"
+ * 			and responds with the contract offering.
+ */
 public class BeginContractServlet extends HttpServlet {
 	
 	String neueprozessid;
