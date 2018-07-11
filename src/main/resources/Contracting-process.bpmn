@@ -19,10 +19,10 @@
         <bpmn:flowNodeRef>create_and_send_insurance_offering</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>customer_requirement_received</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>IntermediateThrowEvent_09xkzjg</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>EndEvent_0a0muon</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Task_0lbxkpn</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>collect_inurance_fees</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>IntermediateThrowEvent_19ywn7p</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>collect_inurance_fees</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_0a0muon</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="Lane_10e3s8u" name="Manual ">
         <bpmn:flowNodeRef>IntermediateCatchEvent_04hrj0n</bpmn:flowNodeRef>
@@ -135,25 +135,25 @@
     </bpmn:intermediateCatchEvent>
     <bpmn:sequenceFlow id="SequenceFlow_0m77dok" sourceRef="IntermediateThrowEvent_09xkzjg" targetRef="Task_0lbxkpn" />
     <bpmn:sequenceFlow id="SequenceFlow_06jztfv" sourceRef="Task_0lbxkpn" targetRef="IntermediateThrowEvent_19ywn7p" />
-    <bpmn:sequenceFlow id="SequenceFlow_1k7xxlu" sourceRef="IntermediateThrowEvent_19ywn7p" targetRef="collect_inurance_fees" />
-    <bpmn:endEvent id="EndEvent_0a0muon">
-      <bpmn:incoming>SequenceFlow_1jlfxtg</bpmn:incoming>
-    </bpmn:endEvent>
     <bpmn:sequenceFlow id="SequenceFlow_1jlfxtg" sourceRef="collect_inurance_fees" targetRef="EndEvent_0a0muon" />
     <bpmn:serviceTask id="Task_0lbxkpn" name="Send claim-payments" camunda:expression="${true}">
       <bpmn:incoming>SequenceFlow_1s8u22m</bpmn:incoming>
       <bpmn:incoming>SequenceFlow_0m77dok</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_06jztfv</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="collect_inurance_fees" name="Collect insurance fees" camunda:expression="${true}">
-      <bpmn:incoming>SequenceFlow_1k7xxlu</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_1jlfxtg</bpmn:outgoing>
-    </bpmn:serviceTask>
     <bpmn:intermediateCatchEvent id="IntermediateThrowEvent_19ywn7p" name="payment received">
       <bpmn:incoming>SequenceFlow_06jztfv</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_1k7xxlu</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_0x5bhie</bpmn:outgoing>
       <bpmn:messageEventDefinition messageRef="Message_1phvq3q" />
     </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_0x5bhie" sourceRef="IntermediateThrowEvent_19ywn7p" targetRef="collect_inurance_fees" />
+    <bpmn:userTask id="collect_inurance_fees" name="Collect insurance fees" camunda:formKey="app:payment.jsf">
+      <bpmn:incoming>SequenceFlow_0x5bhie</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1jlfxtg</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="EndEvent_0a0muon">
+      <bpmn:incoming>SequenceFlow_1jlfxtg</bpmn:incoming>
+    </bpmn:endEvent>
   </bpmn:process>
   <bpmn:message id="Message_1n6dn6g" name="contractConfirmed" />
   <bpmn:message id="Message_1up73u7" name="instantiationMessageContract" />
@@ -162,7 +162,7 @@
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0eg8kno">
       <bpmndi:BPMNShape id="Participant_0pygkfv_di" bpmnElement="contracting_process">
-        <dc:Bounds x="79" y="-313" width="2533" height="845" />
+        <dc:Bounds x="79" y="-313" width="2727" height="845" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="DataStoreReference_197cnoc_di" bpmnElement="customer_database_read">
         <dc:Bounds x="434" y="232" width="50" height="50" />
@@ -297,10 +297,10 @@
         <di:waypoint x="2009" y="-15" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Lane_18apn5c_di" bpmnElement="Lane_18apn5c">
-        <dc:Bounds x="109" y="-107" width="2503" height="639" />
+        <dc:Bounds x="109" y="-107" width="2697" height="639" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Lane_10e3s8u_di" bpmnElement="Lane_10e3s8u">
-        <dc:Bounds x="109" y="-313" width="2503" height="206" />
+        <dc:Bounds x="109" y="-313" width="2697" height="206" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_1g2qrkp_di" bpmnElement="SequenceFlow_1g2qrkp">
         <di:waypoint x="366" y="120" />
@@ -336,22 +336,15 @@
         <di:waypoint x="2248" y="120" />
         <di:waypoint x="2282" y="120" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="SequenceFlow_1k7xxlu_di" bpmnElement="SequenceFlow_1k7xxlu">
-        <di:waypoint x="2318" y="120" />
-        <di:waypoint x="2347" y="120" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="EndEvent_0a0muon_di" bpmnElement="EndEvent_0a0muon">
-        <dc:Bounds x="2476" y="102" width="36" height="36" />
+        <dc:Bounds x="2534" y="102" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_1jlfxtg_di" bpmnElement="SequenceFlow_1jlfxtg">
-        <di:waypoint x="2447" y="120" />
-        <di:waypoint x="2476" y="120" />
+        <di:waypoint x="2478" y="120" />
+        <di:waypoint x="2534" y="120" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ServiceTask_06xjwzp_di" bpmnElement="Task_0lbxkpn">
         <dc:Bounds x="2148" y="80" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="ServiceTask_0sfk5uc_di" bpmnElement="collect_inurance_fees">
-        <dc:Bounds x="2347" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="IntermediateCatchEvent_0ntlsq3_di" bpmnElement="IntermediateThrowEvent_19ywn7p">
         <dc:Bounds x="2282" y="102" width="36" height="36" />
@@ -359,6 +352,13 @@
           <dc:Bounds x="2256" y="145" width="88" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_13rp1md_di" bpmnElement="collect_inurance_fees">
+        <dc:Bounds x="2378" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0x5bhie_di" bpmnElement="SequenceFlow_0x5bhie">
+        <di:waypoint x="2318" y="120" />
+        <di:waypoint x="2378" y="120" />
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>
